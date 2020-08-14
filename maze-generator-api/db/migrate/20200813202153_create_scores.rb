@@ -5,7 +5,6 @@ class CreateScores < ActiveRecord::Migration[6.0]
       t.integer :user_id
       t.integer :maze_id
 
-
       t.timestamps
     end
   end
