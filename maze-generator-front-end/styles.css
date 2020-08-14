@@ -1,0 +1,53 @@
+body {
+  margin: 0;
+  padding: 0;
+}
+
+header {
+  text-align: center;
+  background-color: #4caf50;
+  margin: 0 auto;
+  height: 50px;
+}
+
+header h2 {
+  padding: 10px;
+  margin: 0;
+}
+
+main {
+  padding-top: 10px;
+  padding-bottom: 30px;
+  background-color: #fffe43;
+}
+
+p {
+  font-size: 1.5em;
+  color: black;
+  font-family: Helvetica;
+}
+
+li {
+  font-size: 1.05em;
+  list-style: none;
+  padding-right: 20px;
+}
+
+button {
+  font-size: 0.65em;
+  color: #fff;
+  background-color: green;
+  border-radius: 10px;
+}
+
+button.release {
+  float: right;
+  background-color: #e1332d;
+}
+
+canvas {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    background-color: #e1332d;
+}

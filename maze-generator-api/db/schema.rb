@@ -10,13 +10,31 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_08_12_151729) do
+ActiveRecord::Schema.define(version: 2020_08_14_004523) do
 
   create_table "mazes", force: :cascade do |t|
     t.integer "width"
     t.integer "height"
+    t.integer "coins"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.integer "user_id"
+    t.index ["user_id"], name: "index_mazes_on_user_id"
+  end
+
+  create_table "scores", force: :cascade do |t|
+    t.integer "time"
+    t.integer "user_id"
+    t.integer "maze_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
   end
 
+  create_table "users", force: :cascade do |t|
+    t.string "username"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
+  add_foreign_key "mazes", "users"
 end

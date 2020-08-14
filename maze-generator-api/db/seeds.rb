@@ -6,7 +6,14 @@
 #   movies = Movie.create([{ name: 'Star Wars' }, { name: 'Lord of the Rings' }])
 #   Character.create(name: 'Luke', movie: movies.first)
 
-maze_a = Maze.create(width: 400, height: 300)
-maze_b = Maze.create(width: 300, height: 200)
-maze_c = Maze.create(width: 500, height: 400)
-maze_d = Maze.create(width: 200, height: 200)
+Maze.delete_all
+User.delete_all
+
+test_user = User.create(username: "Test-User")
+
+maze_a = Maze.create(width: 20, height: 20, coins: 20, user_id: test_user.id)
+maze_b = Maze.create(width: 25, height: 25, coins: 25, user_id: test_user.id)
+maze_c = Maze.create(width: 30, height: 30, coins: 30, user_id: test_user.id)
+maze_d = Maze.create(width: 35, height: 35, coins: 35, user_id: test_user.id)
+maze_e = Maze.create(width: 40, height: 40, coins: 40, user_id: test_user.id)
+
