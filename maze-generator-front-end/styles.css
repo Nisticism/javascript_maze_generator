@@ -4,10 +4,11 @@ body {
 }
 
 header {
+  color: white;
   text-align: center;
-  background-color: #4caf50;
-  margin: 0 auto;
-  height: 50px;
+  background-color: darkgreen;
+  margin: 0;
+  font-size: 40px
 }
 
 header h2 {
@@ -16,9 +17,8 @@ header h2 {
 }
 
 main {
-  padding-top: 10px;
   padding-bottom: 30px;
-  background-color: #fffe43;
+  background-color: skyblue;
 }
 
 p {
@@ -34,10 +34,11 @@ li {
 }
 
 button {
-  font-size: 0.65em;
+  font-size: 24;
   color: #fff;
   background-color: green;
   border-radius: 10px;
+  float: center;
 }
 
 button.release {
@@ -45,9 +46,68 @@ button.release {
   background-color: #e1332d;
 }
 
+#generate {
+  padding: 20px;
+  font-size: 20px;
+  margin-left: auto;
+  margin-right: auto;
+  display: block;
+  margin-top: 20px;
+}
+
+#log_in {
+  padding: 20px;
+  font-size: 20px;
+  margin-left: auto;
+  margin-right: auto;
+  display: block;
+  margin-top: 20px;
+}
+
 canvas {
     display: block;
     margin-left: auto;
     margin-right: auto;
-    background-color: #e1332d;
+    background-color: rgb(49, 43, 43);
+}
+
+footer {
+  text-align: center;
+  font-size: 10px;
+}
+
+ul {
+  margin: 0;
+  margin-bottom: 10px;
+  padding: 0;
+  overflow: hidden;
+  background-color: #333;
+}
+
+li {
+  text-align: center;
+  float: left;
+}
+
+.active {
+  background-color: #4CAF50;
+}
+
+li a {
+  display: block;
+  color: white;
+  text-align: center;
+  padding: 18px;
+  text-decoration: none;
+}
+
+/* Change the link color to #111 (black) on hover */
+li a:hover {
+  background-color: #111;
+}
+
+img#ruler {
+  margin-left: auto;
+  margin-right: auto;
+  display: block;
 }
