@@ -134,20 +134,22 @@ let CANVAS_HEIGHT = 800;
 let MAZE_WIDTH = 800;
 let MAZE_HEIGHT = 600;
 
+let PATH_SIZE = 10;
 let COIN_RADIUS = 8;
+let STARTING_AREA_WIDTH = 50;
+let STARTING_AREA_HEIGHT = 50;
+let FINISH_AREA_SIZE = 50;
 
 let MAZE_X_CONSTANT = (CANVAS_WIDTH - MAZE_WIDTH) / 2;
 let MAZE_Y_CONSTANT = (CANVAS_HEIGHT - MAZE_HEIGHT) / 2;
 
-let paths = [];
-let coins = [];
+let pathString = "60 60 70 70 80 80 90 90 200 40 50 50 60 60 70 70 80 80 90 90 100 100";
+let coinString = "200 200 220 220 230 230 300 300 400 400 500 500";
 
-let game = new Game(MAZE_WIDTH, MAZE_HEIGHT, MAZE_X_CONSTANT, MAZE_Y_CONSTANT);
+let game = new Game(MAZE_WIDTH, MAZE_HEIGHT, MAZE_X_CONSTANT, MAZE_Y_CONSTANT, pathString, coinString, 
+  COIN_RADIUS, FINISH_AREA_SIZE, PATH_SIZE);
 game.start();
 let lastTime = 0;
-
-addPaths(MAZE_X_CONSTANT, MAZE_Y_CONSTANT);
-addCoins(MAZE_X_CONSTANT, MAZE_Y_CONSTANT);
 
 function gameLoop(timestamp) {
   let deltaTime = timestamp - lastTime;
@@ -155,52 +157,22 @@ function gameLoop(timestamp) {
 
   ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
   drawMazeBorder(ctx);
+  drawStartingArea(ctx);
   game.update(deltaTime);
   game.draw(ctx);
-  drawPaths(paths);
-  drawCoins(coins);
 
   requestAnimationFrame(gameLoop);
 }
 
 requestAnimationFrame(gameLoop);
 
-function addCoins(x, y) {
-  let coin1 = new Coin(100 + x + COIN_RADIUS, 50 + y + COIN_RADIUS);
-  let coin2 = new Coin(50 + x + COIN_RADIUS, 40 + y + COIN_RADIUS);
-  let coin3 = new Coin(20 + x + COIN_RADIUS, 40 + y + COIN_RADIUS);
-  let coin4 = new Coin(x + COIN_RADIUS, 400 + y + COIN_RADIUS);
-
-  coins.push(coin1);
-  coins.push(coin2);
-  coins.push(coin3);
-  coins.push(coin4);
-}
-
-function addPaths(x, y) {
-  let path1 = new Path(0 + x, 0 + y);
-  let path2 = new Path(0 + x, 10 + y);
-  let path3 = new Path(0 + x, 20 + y);
-  let path4 = new Path(0 + x, 30 + y);
-  let path5 = new Path(0 + x, 40 + y);
-
-  paths.push(path1);
-  paths.push(path2);
-  paths.push(path3);
-  paths.push(path4);
-  paths.push(path5);
-}
-
-function drawPaths(paths) {
-  paths.forEach((path) => path.draw(ctx));
-}
-
-function drawCoins(coins) {
-  coins.forEach((coin) => coin.draw(ctx));
-}
-
 function drawMazeBorder(ctx) {
   ctx.strokeStyle="white"
   ctx.lineWidth = 2;
   ctx.strokeRect(MAZE_X_CONSTANT - 1, MAZE_Y_CONSTANT - 1, MAZE_WIDTH + 1, MAZE_HEIGHT + 1);
+}
+
+function drawStartingArea(ctx) {
+  ctx.fillStyle = "gray"
+  ctx.fillRect(MAZE_X_CONSTANT, MAZE_Y_CONSTANT, STARTING_AREA_WIDTH, STARTING_AREA_HEIGHT);
 }

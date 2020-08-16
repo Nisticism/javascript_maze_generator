@@ -1,5 +1,6 @@
 class Cursor {
   constructor(game) {
+    this.game = game;
     this.mazeWidth = game.mazeWidth;
     this.mazeHeight = game.mazeHeight;
     this.xOffset = game.xOffset;
@@ -12,8 +13,8 @@ class Cursor {
     this.blocks = game.blocks;
 
     this.position = {
-      x: this.xOffset + 20,
-      y: this.yOffset + 20,
+      x: this.xOffset + 25 - this.width/2,
+      y: this.yOffset + 25 - this.height/2,
     };
   }
 
@@ -51,10 +52,10 @@ class Cursor {
 
     if (this.position.x < 0 + this.xOffset) this.position.x = 0 + this.xOffset;
     if (this.position.y < 0 + this.yOffset) this.position.y = 0 + this.yOffset;
-    if (this.position.x > this.mazeWidth - this.width - this.xOffset)
-      this.position.x = this.mazeWidth - this.width - this.xOffset;
-    if (this.position.y > this.mazeHeight - this.height - this.yOffset)
-      this.position.y = this.mazeHeight - this.height - this.yOffset;
+    if (this.position.x > this.mazeWidth - this.width + this.xOffset)
+      this.position.x = this.mazeWidth - this.width + this.xOffset;
+    if (this.position.y > this.mazeHeight - this.height + this.yOffset)
+      this.position.y = this.mazeHeight - this.height + this.yOffset;
 
     //  Collision
 
@@ -65,5 +66,44 @@ class Cursor {
 
     // if x < start block and > end block, and y is < top block and > bot block
     // then stop moving in that direction
+    this.game.paths.forEach((path) => this.collidePath(path))
   }
+
+  cursorNextToPath(path) {
+    if (Math.abs((this.position.y + this.height / 2) - 
+      (path.y + this.yOffset + (path.height / 2))) < (this.height / 2 + path.height / 2) &&
+      Math.abs((this.position.x + this.width / 2) - 
+      (path.x + this.xOffset + (path.width / 2))) < (this.width / 2 + path.width / 2))
+      {
+        return true;
+      }
+  }
+
+  collidePath(path) {
+    //  Left sides of paths
+    if (this.cursorNextToPath(path) && this.xSpeed > 0) {
+      this.xSpeed = 0;
+      this.position.x -= 4;
+    }
+    //  Right sides of paths
+    if (this.cursorNextToPath(path) && this.xSpeed < 0) {
+      this.xSpeed = 0;
+      this.position.x += 4;
+    }
+    //  Top sides of paths
+    if (this.cursorNextToPath(path) && this.ySpeed > 0) {
+      this.ySpeed = 0;
+      this.position.y -= 4;
+    }
+    //  Bottom sides of paths
+    if (this.cursorNextToPath(path) && this.ySpeed < 0) {
+      this.ySpeed = 0;
+      this.position.y += 4;
+    }
+  }
+
+  collectCoins() {
+
+  }
+  
 }

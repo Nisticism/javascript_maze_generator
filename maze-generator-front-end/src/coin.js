@@ -1,9 +1,10 @@
 class Coin {
 
-    constructor(x, y) {
+    constructor(x, y, game) {
         this.x = x;
         this.y = y;
         this.radius = 8;
+        this.game = game;
     }
 
     draw(ctx) {

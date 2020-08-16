@@ -3,7 +3,8 @@ class CreateMazes < ActiveRecord::Migration[6.0]
     create_table :mazes do |t|
       t.integer :width
       t.integer :height
-      t.integer :coins
+      t.text :coins
+      t.text :paths
 
       t.timestamps
     end
