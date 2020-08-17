@@ -6,11 +6,14 @@ class UsersController < ApplicationController
     end
 
     def new
-
+        @user = User.new
     end
 
     def create
-
+        user = User.find_or_create_by(username: params[:username])
+        if user.save
+            session[:user_id] = user.id
+        end
     end
 
     def show

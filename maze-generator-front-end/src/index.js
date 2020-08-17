@@ -2,13 +2,38 @@
 
 const BASE_URL = "http://localhost:3000";
 const MAZES = `${BASE_URL}/mazes`;
-const PROFILE = `${BASE_URL}/user`;
+const PROFILE = `${BASE_URL}/users/`;
 const canvas = document.getElementById("mazeScreen");
 const ctx = canvas.getContext("2d");
 
 const main = document.querySelector("main");
 //document.addEventListener("DOMContentLoaded", () => loadMaze(4));
 //document.addEventListener("DOMContentLoaded", () => draw());
+
+document.getElementById("log_in_button").addEventListener("click", (event) => {
+  console.log("click");
+  let username = document.getElementById("logInField").value;
+  console.log(username);
+  let userInfo = makeUser(username);
+  console.log(userInfo);
+  //renderUser(userInfo);
+});
+
+const makeUser = (username) => {
+  fetch(`${PROFILE}`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      username: username
+    })
+  }).then(res => {
+    return res.json()
+  })
+  .then(data => console.log(data))
+  .catch(error => console.log('ERROR'))
+};
 
 
 const loadMazes = () => {
@@ -27,93 +52,26 @@ const loadMaze = (id) => {
     });
 };
 
-const loadUser = (id) => {
-  fetch(PROFILE)
-    .then((res) => res.json())
-    .then((json) => {
-      renderUser(json[id]);
-    });
-};
-
-const renderProfile = (userHash) => {
-  const div = document.createElement("div");
-  const p = document.createElement("p");
-  const button = document.createElement("button");
-  const ul = document.createElement("ul");
+const renderUser = (userHash) => {
+  console.log("we are here");
+  let div = document.getElementById("userInfo");
+  let p = document.createElement("p");
 
   div.setAttribute("class", "card");
-  div.setAttribute("data-id", userHash.id);
-  p.innerHTML = userHash.name;
-
-  button.setAttribute("data-trainer-id", trainerHash.id);
-  button.innerHTML = "Play Game";
-  button.addEventListener("click", createPokemon);
+  p.innerHTML = `Welcome ${userHash.username}`;
 
   div.appendChild(p);
   div.appendChild(button);
   div.appendChild(ul);
 
-  main.appendChild(div);
-  trainerHash.pokemons.forEach((pokemon) => renderPokemon(pokemon));
+  //userHash.scores.forEach((score) => renderScore(score));
 };
+
+// const renderScores = (scoreHash) => {
+
+// }
 
 const renderMazes = (mazesHash) => {};
-
-const renderMaze = (mazeHash) => {
-  const canvas_div = document.createElement("div");
-  const generate_div = document.createElement("div");
-  const log_in_div = document.createElement("div");
-
-  const canvas = document.createElement("canvas");
-  const ruler = document.createElement("img");
-
-  const generate_maze_button = document.createElement("button");
-  const generate_maze_width_field = document.createElement("input");
-  const generate_maze_height_field = document.createElement("input");
-  const play_button = document.createElement("button");
-
-  const log_in_button = document.createElement("button");
-  const username_field = document.createElement("input");
-
-  canvas_div.setAttribute("id", "canvas_div");
-  generate_div.setAttribute("id", "generate_div");
-  log_in_div.setAttribute("id", "log_in_div");
-
-  canvas.setAttribute("id", "canvas");
-  canvas.setAttribute("class", "canvas");
-  canvas.setAttribute("width", mazeHash.width * 10);
-  canvas.setAttribute("height", mazeHash.height * 10);
-  ruler.setAttribute("id", "ruler");
-  ruler.setAttribute("src", "src/400px_ruler.png");
-  ruler.setAttribute("alt", "ruler");
-  ruler.setAttribute("width", "411");
-  ruler.setAttribute("height", "30");
-
-  generate_maze_button.setAttribute("id", "generate");
-  generate_maze_button.innerHTML = "Generate maze";
-  generate_maze_width_field.setAttribute("id", "maze_width_field");
-  generate_maze_height_field.setAttribute("id", "maze_height_field");
-  play_button.setAttribute("id", "play_button");
-
-  log_in_button.setAttribute("id", "log_in");
-  log_in_button.innerHTML = "Log In";
-  username_field.setAttribute("id", "log_in_field");
-
-  canvas_div.appendChild(canvas);
-  canvas_div.appendChild(ruler);
-
-  generate_div.appendChild(generate_maze_button);
-  generate_div.appendChild(generate_maze_width_field);
-  generate_div.appendChild(generate_maze_height_field);
-  generate_div.appendChild(play_button);
-
-  log_in_div.appendChild(log_in_button);
-  log_in_div.appendChild(username_field);
-
-  main.appendChild(canvas_div);
-  main.appendChild(generate_div);
-  main.appendChild(log_in_div);
-};
 
 function check_if_logged_in() {
 

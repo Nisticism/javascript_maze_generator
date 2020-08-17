@@ -141,6 +141,12 @@ div.log_in {
 
 #maze_text {
   text-align: center;
+  font-size: 40px;
   padding: 20px;
   margin: auto;
+}
+
+div#userInfo {
+  background-color: black;
+  padding: 20px;
 }

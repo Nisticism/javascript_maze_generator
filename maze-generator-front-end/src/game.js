@@ -28,7 +28,6 @@ class Game {
       var sec = this.time;
       if (code == 1) {
         let timer = setInterval(function() {document.getElementById('timer').innerHTML='00:'+sec; sec++}, 1000);
-        console.log(sec)
       } else {
         return sec;
       }
@@ -76,7 +75,6 @@ class Game {
         console.log(this.time);
         return;
       }
-      console.log(this.time);
       this.cursor.update(deltaTime);
       if (this.coins.length > 0) {
         //console.log("updating", this.coins.length, this.coins[0].position.x, this.coins[0].position.y, this.cursor.position.x, this.cursor.position.y);

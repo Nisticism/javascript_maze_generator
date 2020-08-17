@@ -15,10 +15,10 @@
       <div class = "navigation">
 
         <ul id= "navigation">
-          <li><a href="default.asp">Log In</a></li>
-          <li><a href="news.asp">Play</a></li>
-          <li><a href="contact.asp">Generate</a></li>
-          <li><a href="about.asp">Browse</a></li>
+          <li><a href="index.html">Play</a></li>
+          <li><a href="contact.asp">Scores</a></li>
+          <li><a href="contact.asp">Leaderboard</a></li>
+          <li><a href="about.asp">Browse Mazes</a></li>
         </ul>
 
       </div>
@@ -32,10 +32,18 @@
       <canvas id = "mazeScreen" width = "1000" height = "800"></canvas>
       <div class = "timer" id = "timer"></div>
 
+      <!-- User Information and Scores Go here -->
+
+      <div id="userInfo">
+      </div>
+
     </main>
+
+
+
     <div class ="log_in">
       <p id="log_in_text">Log in here to play</p>
-      <h4 >Username: </h4><input id="log_in_field" name="Username"></input>
+      <h4 >Username: </h4><input id="logInField" name="Username"></input>
       <button id= "log_in_button">Log In</button>
     </div>
 
