@@ -47,63 +47,103 @@ class Cursor {
   }
 
   update(deltaTime) {
+
     this.position.x += this.xSpeed;
     this.position.y += this.ySpeed;
 
-    if (this.position.x < 0 + this.xOffset) this.position.x = 0 + this.xOffset;
-    if (this.position.y < 0 + this.yOffset) this.position.y = 0 + this.yOffset;
+    //  ----------  Collision  ----------
+    //  Maze Walls 
+
+    if (this.position.x < 0 + this.xOffset) this.position.x = this.xOffset;
+    if (this.position.y < 0 + this.yOffset) this.position.y = this.yOffset;
     if (this.position.x > this.mazeWidth - this.width + this.xOffset)
       this.position.x = this.mazeWidth - this.width + this.xOffset;
     if (this.position.y > this.mazeHeight - this.height + this.yOffset)
       this.position.y = this.mazeHeight - this.height + this.yOffset;
 
-    //  Collision
+    //  Path and Coins
 
-    let startX = this.position.x;
-    let startY = this.position.y;
-    let endX = this.position.x + this.width;
-    let endY = this.position.y + this.height;
-
-    // if x < start block and > end block, and y is < top block and > bot block
-    // then stop moving in that direction
     this.game.paths.forEach((path) => this.collidePath(path))
+    this.game.coins.forEach((coin) => this.collectCoins(coin))
   }
 
-  cursorNextToPath(path) {
-    if (Math.abs((this.position.y + this.height / 2) - 
-      (path.y + this.yOffset + (path.height / 2))) < (this.height / 2 + path.height / 2) &&
-      Math.abs((this.position.x + this.width / 2) - 
-      (path.x + this.xOffset + (path.width / 2))) < (this.width / 2 + path.width / 2))
-      {
+  isAboveAndBordering(path) {
+    //  The bottom of the cursor is greater than or equal to the path block top, and the top of the cursor is less than the block top
+    if (this.position.y + this.height >= path.y + this.yOffset && this.position.y + this.height <= path.y + this.yOffset + this.ySpeed && this.position.y < path.y + this.yOffset && 
+      //  The front of the cursor is less than or equal to the back of the path block, and the front of the cursor is greater than the front of the path block
+      ((this.position.x < (path.x + path.width + this.xOffset) && this.position.x > path.x + this.xOffset) || 
+      //  The back of the cursor is less than the back of the path block, and the back of the cursor is greater than the front of the path block
+      (this.position.x + this.width < (path.x + path.width + this.xOffset) && this.position.x + this.width > path.x + this.xOffset) ||
+      //  The front of the cursor is less than the front of the path block and the back of the cursor is greater than the back of the path block
+      (this.position.x <= (path.x + this.xOffset) && this.position.x + this.width >= (path.x + path.width + this.xOffset))
+      )
+      ) {
         return true;
       }
   }
 
+  isBelowAndBordering(path) {
+    //  The top of the cursor is less than or equal to the bottom of the path block, and the bottom of the cursor is greater than the bottom of the path block
+    if (this.position.y <= path.y + this.yOffset + path.height && this.position.y >= path.y + this.yOffset - this.ySpeed && this.position.y + this.height > path.y + path.height + this.yOffset && 
+      ((this.position.x < (path.x + path.width + this.xOffset) && this.position.x > path.x + this.xOffset) || 
+      (this.position.x + this.width < (path.x + path.width + this.xOffset) && this.position.x + this.width > path.x + this.xOffset) ||
+      (this.position.x <= (path.x + this.xOffset) && this.position.x + this.width >= (path.x + path.width + this.xOffset))
+      )
+      ) {
+        return true;
+      }
+  }
+
+  isLeftAndBordering(path) {
+    if (this.position.x + this.width >= path.x + this.xOffset && this.position.x + this.width <= path.x + this.xOffset + this.xSpeed && this.position.x < path.x + this.xOffset && 
+      ((this.position.y < (path.y + path.height + this.yOffset) && this.position.y > path.y + this.yOffset) || 
+      (this.position.y + this.height < (path.y + path.height + this.yOffset) && this.position.y + this.height > path.y + this.yOffset) ||
+      (this.position.y <= (path.y + this.yOffset) && this.position.y + this.height >= (path.y + path.height + this.yOffset))
+      )
+      ) {
+        return true;
+      }
+  }
+
+  isRightAndBordering(path) {
+    if (this.position.x <= path.x + path.width + this.xOffset && this.position.x >= path.x + this.xOffset - this.xSpeed  && this.position.x + this.width > path.x + path.width + this.xOffset && 
+      ((this.position.y < (path.y + path.height + this.yOffset) && this.position.y > path.y + this.yOffset) || 
+      (this.position.y + this.height < (path.y + path.height + this.yOffset) && this.position.y + this.height > path.y + this.yOffset) ||
+      (this.position.y <= (path.y + this.yOffset) && this.position.y + this.height >= (path.y + path.height + this.yOffset))
+      )
+      ) {
+        return true;
+      }
+  }
+
+
+
   collidePath(path) {
-    //  Left sides of paths
-    if (this.cursorNextToPath(path) && this.xSpeed > 0) {
-      this.xSpeed = 0;
-      this.position.x -= 4;
-    }
-    //  Right sides of paths
-    if (this.cursorNextToPath(path) && this.xSpeed < 0) {
-      this.xSpeed = 0;
-      this.position.x += 4;
-    }
+  
     //  Top sides of paths
-    if (this.cursorNextToPath(path) && this.ySpeed > 0) {
-      this.ySpeed = 0;
-      this.position.y -= 4;
+    if (this.isAboveAndBordering(path) && this.ySpeed > 0) {
+      this.position.y = path.y + this.yOffset - this.height;
     }
     //  Bottom sides of paths
-    if (this.cursorNextToPath(path) && this.ySpeed < 0) {
-      this.ySpeed = 0;
-      this.position.y += 4;
+    if (this.isBelowAndBordering(path) && this.ySpeed < 0) {
+      this.position.y = path.y + this.yOffset + path.height + 1;
+    }
+
+    //  Next to and moving right
+    if (this.isLeftAndBordering(path) && this.xSpeed > 0) {
+      this.position.x = path.x + this.xOffset - this.width;
+    }
+    //  Next to and moving left
+    if (this.isRightAndBordering(path) && this.xSpeed < 0) {
+      this.position.x = path.x + this.xOffset + path.width + 1;
+    }
+    
+  }
+
+  collectCoins(coin) {
+    if (coin.x) {
+
     }
   }
 
-  collectCoins() {
-
-  }
-  
 }

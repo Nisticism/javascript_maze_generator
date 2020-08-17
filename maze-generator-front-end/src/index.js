@@ -10,6 +10,7 @@ const main = document.querySelector("main");
 //document.addEventListener("DOMContentLoaded", () => loadMaze(4));
 //document.addEventListener("DOMContentLoaded", () => draw());
 
+
 const loadMazes = () => {
   fetch(MAZES)
     .then((res) => res.json())
@@ -114,19 +115,9 @@ const renderMaze = (mazeHash) => {
   main.appendChild(log_in_div);
 };
 
-// function draw() {
-//   var canvas = document.getElementById("canvas");
-//   if (canvas.getContext) {
-//     var ctx = canvas.getContext("2d");
+function check_if_logged_in() {
 
-//     var circle = new Path2D();
-//     circle.arc(100, 35, 25, 0, 2 * Math.PI);
-
-//     ctx.fill(circle);
-//   }
-// }
-
-function check_if_logged_in() {}
+}
 
 let CANVAS_WIDTH = 1000;
 let CANVAS_HEIGHT = 800;
@@ -143,11 +134,11 @@ let FINISH_AREA_SIZE = 50;
 let MAZE_X_CONSTANT = (CANVAS_WIDTH - MAZE_WIDTH) / 2;
 let MAZE_Y_CONSTANT = (CANVAS_HEIGHT - MAZE_HEIGHT) / 2;
 
-let pathString = "60 60 70 70 80 80 90 90 200 40 50 50 60 60 70 70 80 80 90 90 100 100";
+let pathString = "60 60 70 70 80 80 90 90 300 40 50 50 60 60 70 70 80 80 90 90 100 100";
 let coinString = "200 200 220 220 230 230 300 300 400 400 500 500";
 
 let game = new Game(MAZE_WIDTH, MAZE_HEIGHT, MAZE_X_CONSTANT, MAZE_Y_CONSTANT, pathString, coinString, 
-  COIN_RADIUS, FINISH_AREA_SIZE, PATH_SIZE);
+  COIN_RADIUS, FINISH_AREA_SIZE, PATH_SIZE, 1);
 game.start();
 let lastTime = 0;
 
@@ -169,7 +160,7 @@ requestAnimationFrame(gameLoop);
 function drawMazeBorder(ctx) {
   ctx.strokeStyle="white"
   ctx.lineWidth = 2;
-  ctx.strokeRect(MAZE_X_CONSTANT - 1, MAZE_Y_CONSTANT - 1, MAZE_WIDTH + 1, MAZE_HEIGHT + 1);
+  ctx.strokeRect(MAZE_X_CONSTANT - 2, MAZE_Y_CONSTANT - 2, MAZE_WIDTH + 2, MAZE_HEIGHT + 2);
 }
 
 function drawStartingArea(ctx) {

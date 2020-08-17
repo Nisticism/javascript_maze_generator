@@ -8,7 +8,7 @@
   </head>
   <body>
     <header>
-      <h2>Maze Generator</h2>
+      <h2>Maze Race</h2>
     </header>
 
     <main>
@@ -23,12 +23,21 @@
 
       </div>
 
+      <div id = "maze_title">
+        <p id = "maze_text">Maze 1</p>
+      </div>
+
       <!-- Mazes go here-->
 
       <canvas id = "mazeScreen" width = "1000" height = "800"></canvas>
-      <img id="ruler" src="assets/images/400px_ruler.png" alt="ruler" width="411" height="30">
+      <div class = "timer" id = "timer"></div>
 
     </main>
+    <div class ="log_in">
+      <p id="log_in_text">Log in here to play</p>
+      <h4 >Username: </h4><input id="log_in_field" name="Username"></input>
+      <button id= "log_in_button">Log In</button>
+    </div>
 
     <script type="module" src="./src/index.js"></script>
     <script src="./src/cursor.js"></script>

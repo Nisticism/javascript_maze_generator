@@ -1,5 +1,5 @@
 class InputHandler {
-  constructor(cursor) {
+  constructor(cursor, game) {
     document.addEventListener("keydown", (event) => {
       switch (event.keyCode) {
         case 37:
@@ -16,6 +16,9 @@ class InputHandler {
           break;
         case 32:
           cursor.stopMoving();
+          break;
+        case 27:
+          game.pause();
           break;
       }
     });
