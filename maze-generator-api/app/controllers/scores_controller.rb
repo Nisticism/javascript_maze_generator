@@ -11,8 +11,13 @@ class ScoresController < ApplicationController
     end
 
     def create
-        score = Score.new(time: params[:time])
-        score.save
+        if (params[:user_id] && params[:maze_id]) {
+            user = User.find_by(id: params[:user_id])
+            maze = Maze.find_by(id: params[:maze_id])
+            score = user.scores.build(time: params[:time])
+            maze.scores << score
+            score.save
+        }
     end
 
 end

@@ -37,6 +37,7 @@ class Game {
       new InputHandler(this.cursor, this);
 
       this.gameObjects = [];
+      this.scoresJson = [];
     }
 
     gameTimer(code) {
@@ -166,15 +167,15 @@ class Game {
     }
 
     makeScore (userId, gameId, time) {
-      fetch('http://localhost:3000/score/create', {
+      fetch('http://localhost:3000/scores', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
           time: time,
-          userId: userId,
-          gameId: gameId
+          user_id: userId,
+          maze_id: gameId
         })
       }).then(res => {
         return res.json()
@@ -183,7 +184,17 @@ class Game {
       .catch(error => console.log('ERROR'))
     };
 
+    getSessionId() {
+
+    }
+
+    getUserFromSession() {
+
+    }
+
+
     loadNextLevel(option) {
+      //this.makeScore()
       this.gameObjects = []
       this.gameIndex += 1;
 

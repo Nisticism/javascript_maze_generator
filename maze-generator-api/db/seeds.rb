@@ -37,3 +37,5 @@ coins: "200 200",
 paths: "60 60 70 70 80 80 90 90 300 40 50 50 60 60 70 70 80 80 90 90 100 100",
 user_id: test_user.id)
 
+score_a = Score.create(time: 10, user_id: 1, maze_id: 2)
+
