@@ -53,9 +53,9 @@ class Game {
         this.loadNextLevel("new");
       }
       //  Start the timer
-      var sec = 1;
-      //console.log(this.time);
-      this.interval = setInterval(function() {document.getElementById('timer_text').innerHTML = '' + (parseInt(sec)); sec++}, 1000);
+      var sec = 0;
+      document.getElementById('timer_text').innerHTML = sec.toFixed(1);
+      this.interval = setInterval(function() {document.getElementById('timer_text').innerHTML = '' + ((parseInt(sec))/10).toFixed(1); sec++}, 100);
       //  Always start in the middle of the start area
       this.cursor.position.x = this.xOffset + this.startAreaWidth/2 - this.cursor.width/2;
       this.cursor.position.y = this.yOffset + this.startAreaHeight/2 - this.cursor.height/2;
@@ -166,13 +166,14 @@ class Game {
         var text = document.getElementById('timer_text').innerHTML
         console.log(text);
         if (text == "Text") {
-          var sec = 1;
+          var sec = 0;
         } 
         
         else {
-          var sec = parseInt(document.getElementById('timer_text').innerHTML) + 1;
+          var sec = parseFloat(document.getElementById('timer_text').innerHTML) + 0.1;
         }
-        this.interval = setInterval(function() {document.getElementById('timer_text').innerHTML = '' + (parseInt(sec)); sec++}, 1000);
+        this.interval = setInterval(function() {document.getElementById('timer_text').innerHTML = '' + (sec).toFixed(1); sec += 0.1}, 100);
+
       } else {
         this.gamestate = GAMESTATE.PAUSED;
         clearInterval(this.interval);
