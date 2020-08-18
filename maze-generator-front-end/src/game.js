@@ -38,15 +38,13 @@ class Game {
 
       this.gameObjects = [];
       this.scoresJson = [];
+      let sec = this.time;
+      let interval = null;
     }
 
-    gameTimer(code) {
-      var sec = this.time;
-      if (code == 1) {
-        let timer = setInterval(function() {document.getElementById('timer').innerHTML='00:'+sec; sec++}, 1000);
-      } else {
-        return sec;
-      }
+    gameTimer() {
+
+      setInterval(function() {document.getElementById('timer_text').innerHTML = '' + (parseInt(sec)); sec++}, 1000);
     }
   
     start() {
@@ -54,7 +52,10 @@ class Game {
       if (this.gamestate == GAMESTATE.GAMEOVER) {
         this.loadNextLevel("new");
       }
-      this.gameTimer(0);
+      //  Start the timer
+      var sec = 1;
+      //console.log(this.time);
+      this.interval = setInterval(function() {document.getElementById('timer_text').innerHTML = '' + (parseInt(sec)); sec++}, 1000);
       //  Always start in the middle of the start area
       this.cursor.position.x = this.xOffset + this.startAreaWidth/2 - this.cursor.width/2;
       this.cursor.position.y = this.yOffset + this.startAreaHeight/2 - this.cursor.height/2;
@@ -93,7 +94,7 @@ class Game {
   
     update(deltaTime) {
       if (this.gamestate === GAMESTATE.PAUSED || this.gamestate === GAMESTATE.MENU) {
-        this.time = this.gameTimer(0)
+        this.time = parseInt(document.getElementById('timer_text').innerHTML)
         return;
       }
       this.cursor.update(deltaTime);
@@ -159,10 +160,22 @@ class Game {
 
 
     pause() {
+      if (this.gamestate == GAMESTATE.MENU) return;
       if (this.gamestate == GAMESTATE.PAUSED) {
         this.gamestate = GAMESTATE.RUNNING;
+        var text = document.getElementById('timer_text').innerHTML
+        console.log(text);
+        if (text == "Text") {
+          var sec = 1;
+        } 
+        
+        else {
+          var sec = parseInt(document.getElementById('timer_text').innerHTML) + 1;
+        }
+        this.interval = setInterval(function() {document.getElementById('timer_text').innerHTML = '' + (parseInt(sec)); sec++}, 1000);
       } else {
         this.gamestate = GAMESTATE.PAUSED;
+        clearInterval(this.interval);
       }
     }
 
@@ -194,7 +207,10 @@ class Game {
 
 
     loadNextLevel(option) {
-      //this.makeScore()
+      clearInterval(this.interval)
+      this.interval = null;
+      this.time = 0;
+      document.getElementById('timer_text').innerHTML = "Time"
       this.gameObjects = []
       this.gameIndex += 1;
 
