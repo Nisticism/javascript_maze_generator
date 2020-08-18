@@ -15,10 +15,10 @@
       <div class = "navigation">
 
         <ul id= "navigation">
-          <li><a href="index.html">Play</a></li>
-          <li><a href="contact.asp">Scores</a></li>
-          <li><a href="contact.asp">Leaderboard</a></li>
-          <li><a href="about.asp">Browse Mazes</a></li>
+          <li><a href="index.html" id= "play">Play</a></li>
+          <li><a href="contact.asp" id= "scores">Scores</a></li>
+          <li><a href="contact.asp" id= "leaderboard">Leaderboard</a></li>
+          <li><a href="about.asp" id= "browseMazes">Browse Mazes</a></li>
         </ul>
 
       </div>
@@ -44,7 +44,9 @@
     <div class ="log_in">
       <p id="log_in_text">Log in here to play</p>
       <h4 >Username: </h4><input id="logInField" name="Username"></input>
-      <button id= "log_in_button">Log In</button>
+      <button id= "logInButton">Log In</button>
+      <button id = "getUser">Get User</button>
+      <p id="userInfo">placeholder</p>
     </div>
 
     <script type="module" src="./src/index.js"></script>

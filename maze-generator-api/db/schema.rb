@@ -15,7 +15,8 @@ ActiveRecord::Schema.define(version: 2020_08_14_004523) do
   create_table "mazes", force: :cascade do |t|
     t.integer "width"
     t.integer "height"
-    t.integer "coins"
+    t.string "coins"
+    t.string "paths"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.integer "user_id"

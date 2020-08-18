@@ -8,7 +8,7 @@ header {
   text-align: center;
   background-color: darkgreen;
   margin: 0;
-  font-size: 40px
+  font-size: 40px;
 }
 
 header h2 {
@@ -64,11 +64,11 @@ button.release {
 }
 
 #mazeScreen {
-    border: 2px solid white;
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
-    background-color: rgb(49, 43, 43);
+  border: 2px solid white;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  background-color: rgb(49, 43, 43);
 }
 
 footer {
@@ -90,7 +90,7 @@ li {
 }
 
 .active {
-  background-color: #4CAF50;
+  background-color: #4caf50;
 }
 
 li a {
@@ -120,7 +120,7 @@ div#timer {
 div.log_in {
   padding: 20px;
   background-color: darkgreen;
-  display: inline;
+  display: inline-block;
 }
 
 #log_in_text {
@@ -131,7 +131,7 @@ div.log_in {
   color: white;
 }
 
-#log_in_button {
+#logInButton {
   padding: 10px;
   font-size: 20px;
   margin-left: auto;
@@ -147,6 +147,17 @@ div.log_in {
 }
 
 div#userInfo {
+  margin-bottom: 100px;
+  padding: 100px;
+  float: top;
   background-color: black;
   padding: 20px;
+}
+
+#getUser {
+  padding: 10px;
+  font-size: 20px;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 20px;
 }

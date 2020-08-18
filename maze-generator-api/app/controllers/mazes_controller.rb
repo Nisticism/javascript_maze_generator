@@ -11,7 +11,8 @@ class MazesController < ApplicationController
     end
 
     def create
-        maze = Maze.new(width: params[:width], height: params[:height], coins: params[:coins])
+        maze = Maze.new(width: params[:width], height: params[:height], coins: params[:coins], 
+        paths: params[:paths], user_id: params[:user_id])
         if maze.save
             render json: maze
         else

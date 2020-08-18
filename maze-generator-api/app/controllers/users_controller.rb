@@ -21,4 +21,12 @@ class UsersController < ApplicationController
         render json: user
     end
 
+    def logout
+        session.delete :user_id
+    end
+
+    def session
+        
+    end
+
 end

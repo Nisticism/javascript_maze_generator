@@ -7,14 +7,14 @@ class Cursor {
     this.yOffset = game.yOffset;
     this.width = 20;
     this.height = 20;
-    this.maxSpeed = 4;
+    this.maxSpeed = this.game.cursorSpeed;
     this.xSpeed = 0;
     this.ySpeed = 0;
     this.blocks = game.blocks;
 
     this.position = {
-      x: this.xOffset + 25 - this.width/2,
-      y: this.yOffset + 25 - this.height/2,
+      x: this.xOffset + game.startAreaWidth/2 - this.width/2,
+      y: this.yOffset + game.startAreaWidth/2 - this.height/2
     };
   }
 
@@ -43,13 +43,17 @@ class Cursor {
 
   draw(ctx) {
     ctx.fillStyle = "#ffffff";
-    ctx.fillRect(this.position.x, this.position.y, this.width, this.height);
+    ctx.fillRect(this.position.x + 1, this.position.y + 1, this.width - 1, this.height - 1);
   }
 
   update(deltaTime) {
-
+    this.xOffset = this.game.xOffset;
+    this.yOffset = this.game.yOffset;
+    this.mazeWidth = this.game.mazeWidth;
+    this.mazeHeight = this.game.mazeHeight;
     this.position.x += this.xSpeed;
     this.position.y += this.ySpeed;
+    this.maxSpeed = this.game.cursorSpeed;
 
     //  ----------  Collision  ----------
     //  Maze Walls 
@@ -126,7 +130,7 @@ class Cursor {
     }
     //  Bottom sides of paths
     if (this.isBelowAndBordering(path) && this.ySpeed < 0) {
-      this.position.y = path.y + this.yOffset + path.height + 1;
+      this.position.y = path.y + this.yOffset + path.height;
     }
 
     //  Next to and moving right
@@ -135,7 +139,7 @@ class Cursor {
     }
     //  Next to and moving left
     if (this.isRightAndBordering(path) && this.xSpeed < 0) {
-      this.position.x = path.x + this.xOffset + path.width + 1;
+      this.position.x = path.x + this.xOffset + path.width;
     }
     
   }

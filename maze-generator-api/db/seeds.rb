@@ -11,9 +11,29 @@ User.delete_all
 
 test_user = User.create(username: "Test-User")
 
-maze_a = Maze.create(width: 20, height: 20, coins: 20, user_id: test_user.id)
-maze_b = Maze.create(width: 25, height: 25, coins: 25, user_id: test_user.id)
-maze_c = Maze.create(width: 30, height: 30, coins: 30, user_id: test_user.id)
-maze_d = Maze.create(width: 35, height: 35, coins: 35, user_id: test_user.id)
-maze_e = Maze.create(width: 40, height: 40, coins: 40, user_id: test_user.id)
+maze_a = Maze.create(width: 30, height: 30, 
+coins: "200 200", 
+paths: "60 60 70 70 80 80 90 90 300 40 50 50 60 60 70 70 80 80 90 90 100 100", 
+user_id: test_user.id)
+maze_a.save
+
+maze_b = Maze.create(width: 35, height: 35, 
+coins: "200 200", 
+paths: "60 60 70 70 80 80 90 90 300 40 50 50 60 60 70 70 80 80 90 90 100 100",
+user_id: test_user.id)
+
+maze_c = Maze.create(width: 50, height: 40, 
+coins: "200 200", 
+paths: "60 60 70 70 80 80 90 90 300 40 50 50 60 60 70 70 80 80 90 90 100 100",
+user_id: test_user.id)
+
+maze_d = Maze.create(width: 65, height: 55, 
+coins: "200 200",
+paths: "60 60 70 70 80 80 90 90 300 40 50 50 60 60 70 70 80 80 90 90 100 100",
+user_id: test_user.id)
+
+maze_e = Maze.create(width: 80, height: 60, 
+coins: "200 200", 
+paths: "60 60 70 70 80 80 90 90 300 40 50 50 60 60 70 70 80 80 90 90 100 100",
+user_id: test_user.id)
 

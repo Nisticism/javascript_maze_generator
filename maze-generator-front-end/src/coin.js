@@ -3,7 +3,7 @@ class Coin {
     constructor(x, y, game) {
         this.x = x;
         this.y = y;
-        this.radius = 8;
+        this.radius = 7;
         this.game = game;
         this.position = {
             x: this.game.xOffset + this.radius + this.x,

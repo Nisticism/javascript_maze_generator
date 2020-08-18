@@ -2,28 +2,28 @@ class Finish {
 
     constructor(game) {
         this.game = game;
-        this.x = game.xOffset + game.mazeWidth - game.finishAreaSize-1;
-        this.y = game.yOffset + game.mazeHeight - game.finishAreaSize-1;
-        this.xOffset = game.xOffset;
-        this.yOffset = game.yOffset;
         this.width = game.finishAreaSize;
         this.height = game.finishAreaSize;
     }
 
     draw(ctx) {
         ctx.fillStyle = 'green'
-        ctx.fillRect(this.x, this.y, this.width, this.height);
+        ctx.fillRect(this.game.xOffset + this.game.mazeWidth - this.game.finishAreaSize - 1, 
+            this.game.yOffset + this.game.mazeHeight - this.game.finishAreaSize - 1, this.width, this.height);
     }
 
     collision() {
-        if (this.game.cursor.position.x + this.game.cursor.width >= this.x && this.game.cursor.position.y + this.game.cursor.height >= this.y) {
+        if (this.game.cursor.position.x + this.game.cursor.width >= (this.game.xOffset + this.game.mazeWidth - this.game.finishAreaSize - 1) 
+        && this.game.cursor.position.y + this.game.cursor.height >= (this.game.yOffset + this.game.mazeHeight - this.game.finishAreaSize - 1)) {
             return true;
         }
     }
 
     update(deltaTime) {
+        this.width = this.game.finishAreaSize;
+        this.height = this.game.finishAreaSize;
         if (this.collision() && this.game.coins.length == 0) {
-            this.game.endLevel();
+            this.game.loadNextLevel();
         }
     }
 }

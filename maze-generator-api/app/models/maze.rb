@@ -9,10 +9,8 @@ class Maze < ApplicationRecord
 
     validates :width, numericality: { only_integer: true }
     validates :height, numericality: { only_integer: true }
-    validates :coins, numericality: { only_integer: true }
 
-    validates_inclusion_of :width, :in => 20..60
-    validates_inclusion_of :height, :in => 20..60
-    validates_inclusion_of :coins, :in => 0..100
+    validates_inclusion_of :width, :in => 20..90
+    validates_inclusion_of :height, :in => 20..70
 
 end
