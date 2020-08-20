@@ -7,7 +7,7 @@ const GAMESTATE = {
 
 class Game {
     constructor(mazeWidth, mazeHeight, xOffset, yOffset, pathString, coinString, coinRadius, 
-      finishAreaSize, pathSize, gameId, startAreaWidth, startAreaHeight, maxMazes, cursorSpeed, gameArray) {
+      finishAreaSize, pathSize, gameId, startAreaWidth, startAreaHeight, maxMazes, cursorSpeed, userId, gameArray) {
       this.mazeWidth = mazeWidth;
       this.mazeHeight = mazeHeight;
       this.pathString = pathString;
@@ -22,6 +22,7 @@ class Game {
       this.gameArray = gameArray;
       this.gameIndex = gameId - 1;
       this.cursorSpeed = cursorSpeed;
+      this.userId = userId;
 
       this.pathSize = pathSize;
       this.coinRadius = coinRadius;
@@ -76,9 +77,11 @@ class Game {
       let paths = pathString.split(" ");
       
       var i;
-      for (i = 0; i < paths.length; i ++) {
-        this.paths.push(new Path(parseInt(paths[i]), (parseInt(paths[i + 1]) + 1), this))
-        i += 1;
+      if (pathString != "") {
+        for (i = 0; i < paths.length; i ++) {
+          this.paths.push(new Path(parseInt(paths[i]), (parseInt(paths[i + 1]) + 1), this))
+          i += 1;
+        }
       }
     }
 
@@ -86,15 +89,19 @@ class Game {
       let coins = coinString.split(" ");
       
       var i;
-      for (i = 0; i < coins.length; i ++) {
-        this.coins.push(new Coin((parseInt(coins[i]) + this.coinRadius), (parseInt(coins[i + 1]) + this.coinRadius), this))
-        i += 1;
+      if (coinString != "") {
+        for (i = 0; i < coins.length; i ++) {
+          this.coins.push(new Coin((parseInt(coins[i]) + this.coinRadius), (parseInt(coins[i + 1]) + this.coinRadius), this))
+          i += 1;
+        }
       }
     }
   
     update(deltaTime) {
       if (this.gamestate === GAMESTATE.PAUSED || this.gamestate === GAMESTATE.MENU) {
         this.time = parseInt(document.getElementById('timer_text').innerHTML)
+        console.log("Paused or Menu");
+        console.log(this.gameId);
         return;
       }
       this.cursor.update(deltaTime);
@@ -109,6 +116,7 @@ class Game {
   
     draw(ctx) {
       
+      document.getElementById('maze_text').innerHTML=`Maze ${this.gameId}`
       this.drawMazeBorder(ctx);
       this.drawStartingArea(ctx);
       this.gameObjects.forEach((object) => object.draw(ctx));
@@ -150,7 +158,7 @@ class Game {
     drawMazeBorder(ctx) {
       ctx.strokeStyle="white"
       ctx.lineWidth = 2;
-      ctx.strokeRect(this.xOffset - 1, this.yOffset - 1, this.mazeWidth + 1, this.mazeHeight + 1);
+      ctx.strokeRect(this.xOffset - 1, this.yOffset - 1, this.mazeWidth + 3, this.mazeHeight + 3);
     }
     
     drawStartingArea(ctx) {
@@ -191,32 +199,23 @@ class Game {
           user_id: userId,
           maze_id: gameId
         })
-      }).then(res => {
-        return res.json()
-      })
-      .then(data => console.log(data))
-      .catch(error => console.log('ERROR'))
+      }).catch(error => console.log('ERROR'))
     };
 
-    getSessionId() {
-
-    }
-
-    getUserFromSession() {
-
-    }
-
-
     loadNextLevel(option) {
-      clearInterval(this.interval)
-      this.interval = null;
-      this.time = 0;
-      document.getElementById('timer_text').innerHTML = "Time"
-      this.gameObjects = []
-      this.gameIndex += 1;
 
-      if (option == "new") {
-        this.gameIndex = 0;
+        if (this.GAMESTATE != GAMESTATE.GAMEOVER) {
+
+        console.log(this.gameObjects);
+        document.getElementById('timer_text').innerHTML = "Time"
+        this.gameObjects = []
+        this.gameIndex += 1;
+
+        console.log(this.gameIndex, this.maxMazes);
+
+        if (option == "new") {
+          this.gameIndex = 0;
+        }
       }
 
       if (this.gameIndex >= this.maxMazes) {
@@ -241,20 +240,23 @@ class Game {
       this.startAreaHeight = gameArray[this.gameIndex][11];
       this.maxMazes = gameArray[this.gameIndex][12];
 
-      document.getElementById('maze_text').innerHTML=`Maze ${this.gameId}`
-
       this.gamestate = GAMESTATE.MENU;
 
     }
 
     gameEnd() {
-      if (this.gameIndex >= this.maxMazes) {
+      if (this.gameIndex > this.maxMazes) {
+        //this.gameArray = [];
         this.gamestate = GAMESTATE.GAMEOVER;
         return;
       } else {
         return false;
       }
 
+    }
+
+    quit() {
+      clearInterval(this.interval);
     }
   }
   

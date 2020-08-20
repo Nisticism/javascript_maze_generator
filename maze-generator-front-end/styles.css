@@ -17,7 +17,6 @@ header h2 {
 }
 
 main {
-  padding-bottom: 30px;
   background-color: skyblue;
 }
 
@@ -69,6 +68,7 @@ button.release {
   margin-left: auto;
   margin-right: auto;
   background-color: rgb(49, 43, 43);
+  margin-bottom: 30px;
 }
 
 footer {
@@ -150,23 +150,19 @@ div.log_in {
   margin: auto;
 }
 
-div#userInfo {
-  margin-bottom: 100px;
-  padding: 100px;
+div#userSpace {
   float: top;
   background-color: black;
   padding: 20px;
 }
 
-#getUser {
-  display: inline;
-  padding: 10px;
-  font-size: 20px;
-  margin-left: auto;
-  margin-right: auto;
+#userInfo {
+  text-align: center;
+  font-size: 30px;
+  color: white;
 }
 
-h3 {
+h2 {
   color: white;
   display: inline;
 }

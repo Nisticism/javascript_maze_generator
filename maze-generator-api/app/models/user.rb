@@ -5,4 +5,5 @@ class User < ApplicationRecord
     has_many :created_mazes, class_name: "Mazes"
 
     validates :username, length: { in: 3..20 }
+    validates :username, uniqueness: true
 end

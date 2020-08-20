@@ -23,6 +23,17 @@ class Finish {
         this.width = this.game.finishAreaSize;
         this.height = this.game.finishAreaSize;
         if (this.collision() && this.game.coins.length == 0) {
+
+            //  Set game end settings
+
+            this.game.time = document.getElementById('timer_text').innerHTML;
+            this.game.quit();
+            //this.game.makeScore(this.game.userId, this.game.gameId, this.game.time.toString());
+            this.game.interval = null;
+            this.game.time = 0;
+            console.log("finish area");
+
+            //  Load next
             this.game.loadNextLevel();
         }
     }

@@ -16,15 +16,15 @@
 
         <ul id= "navigation">
           <li><a href="index.html" id= "play">Play</a></li>
-          <li><a href="contact.asp" id= "scores">Scores</a></li>
-          <li><a href="contact.asp" id= "leaderboard">Leaderboard</a></li>
-          <li><a href="about.asp" id= "browseMazes">Browse Mazes</a></li>
+          <li><a href="index.html" id= "scores">Scores</a></li>
+          <li><a href="index.html" id= "leaderboard">Leaderboard</a></li>
+          <li><a href="index.html" id= "browseMazes">Browse Mazes</a></li>
         </ul>
 
       </div>
 
       <div id = "maze_title">
-        <p id = "maze_text">Maze 1</p>
+        <p id = "maze_text"></p>
       </div>
 
       <!-- Mazes go here-->
@@ -36,7 +36,8 @@
 
       <!-- User Information and Scores Go here -->
 
-      <div id="userInfo" >
+      <div id="userSpace">
+        <p id= "userInfo"></p>
       </div>
 
     </main>
@@ -44,11 +45,9 @@
 
 
     <div class ="log_in">
-      <p id="log_in_text">Log in here to play</p>
       <div class="inline">
-        <h3>Username: </h3><input id="logInField" name="Username"></input>
+        <h2 id="usernameText">Username: </h2><input id="logInField" name="Username"></input>
         <button id= "logInButton">Log In</button>
-        <button id = "getUser">Get User</button>
       </div>
     </div>
 
