@@ -14,7 +14,7 @@ class ScoresController < ApplicationController
         if (params[:user_id] && params[:maze_id])
             user = User.find_by(id: params[:user_id])
             maze = Maze.find_by(id: params[:maze_id])
-            score = user.scores.build(time: params[:time])
+            score = user.scores.build(time: params[:time], username: user.username)
             maze.scores << score
         end
     end

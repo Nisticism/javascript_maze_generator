@@ -86,7 +86,8 @@ function setListeners() {
   });
   document.getElementById("leaderboard").addEventListener("click", (event) => {
     event.preventDefault();
-    window.scrollTo(0,document.body.scrollHeight);
+    var scrollingElement = (document.scrollingElement || document.body);
+    scrollingElement.scrollTop = scrollingElement.scrollHeight;
     loadScores();
   });
   document.getElementById("browseMazes").addEventListener("click", (event) => {
@@ -133,6 +134,14 @@ const loadScores = () => {
     });
 };
 
+const loadUser = () => {
+  fetch(SCORES)
+    .then((res) => res.json())
+    .then((json) => {
+      setScoresData(json);
+    });
+};
+
 function setScoresData(json) {
   let scoresArray = [];
   for (let i = 0; i < json.length; i++) {
@@ -149,10 +158,16 @@ function setScoresData(json) {
 }
 
 function renderScoresData(scoresArray) {
+  console.log("rendering scores");
   let ul = document.createElement("ul");
+  let li = document.createElement("li");
+  li.innerHTML = scoresArray[0];
   let p = document.createElement("p");
+  p.innerHTML = "Leaderbord";
   ul.innerHTML = "Leaderboard";
   let userSpace = document.getElementById("userSpace");
+  userSpace.appendChild(p);
+  ul.appendChild(li);
   userSpace.appendChild(ul);
   
 }
