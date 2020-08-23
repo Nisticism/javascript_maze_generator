@@ -105,13 +105,14 @@ function setLoggedInUI() {
   document.getElementById("usernameText").style.display = "none";
   document.getElementById("play").innerHTML = "Play";
   document.getElementById("scores").style.display = "block";
-  
-  console.log("loggedin")
+
+  console.log("loggedin");
 }
 
 function setListeners() {
   document.getElementById("scores").addEventListener("click", (event) => {
     event.preventDefault();
+    loadUserScore();
   });
   document.getElementById("play").addEventListener("click", (event) => {
     event.preventDefault();
@@ -119,10 +120,10 @@ function setListeners() {
       while (userSpaceDisplay.hasChildNodes()) {
         userSpaceDisplay.removeChild(userSpaceDisplay.firstChild);
       }
-      let p = document.createElement('p');
-      p.innerHTML = "Please log in to play"
-      p.style.color = "white"
-      p.style.textAlign = "center"
+      let p = document.createElement("p");
+      p.innerHTML = "Please log in to play";
+      p.style.color = "white";
+      p.style.textAlign = "center";
       userSpaceDisplay.appendChild(p);
       userSpace = document.getElementById("userSpace");
       userSpace.appendChild(userSpaceDisplay);
@@ -191,6 +192,7 @@ function setUserInfo(json) {
   userInfo[1] = json.username;
   userInfo[2] = json.mazes;
   userInfo[3] = json.scores;
+  renderUser();
 }
 
 function setScoresData(json) {
@@ -209,8 +211,21 @@ function setScoresData(json) {
   renderScoresData(scoresArray);
 }
 
-function renderScoresData(scoresArray) {
+function sortFunction(a, b) {
+  if (parseFloat(a[1]) === parseFloat(b[1])) {
+    return 1;
+  } else {
+    return parseFloat(a[1]) < parseFloat(b[1]) ? -1 : 1;
+  }
+}
 
+function nestedSort(nestedArray) {
+  return nestedArray.sort(sortFunction);
+}
+
+function renderScoresData(scoresArray) {
+  document.getElementById("userInfo").style.display = "none";
+  //  Remove anything from the section
   while (userSpaceDisplay.hasChildNodes()) {
     userSpaceDisplay.removeChild(userSpaceDisplay.firstChild);
   }
@@ -222,47 +237,121 @@ function renderScoresData(scoresArray) {
   p.style.color = "white";
   userSpaceDisplay.appendChild(p);
   console.log(scoresArray[0][1]);
-  let idMap = new Map()
+  let idMap = new Map();
   console.log(scoresArray);
-  for (let i = 0; i < scoresArray.length; i ++) {
+
+  //  Make a map of the mazes
+
+  for (let i = 0; i < scoresArray.length; i++) {
     let tempArray = scoresArray[i];
-    let score = [tempArray[1], tempArray[2], tempArray[4]]
+    let score = [tempArray[1], tempArray[2], tempArray[4]];
     if (!idMap.get(parseInt(tempArray))) {
-      idMap.set(parseInt(tempArray[0]), [])
+      idMap.set(parseInt(tempArray[0]), []);
     }
-    idMap.get(parseInt(tempArray)).push(score)
+    idMap.get(parseInt(tempArray)).push(score);
   }
-  for (let i = 0; i < idMap.size; i ++) {
+
+  //  Iterate over each maze
+
+  for (let i = 0; i < idMap.size; i++) {
     let ul = document.createElement("ul");
     ul.innerHTML = "Maze " + (i + 1);
     userSpaceDisplay.appendChild(ul);
     ul.setAttribute("id", "scores");
-    for (let scores = 0; scores < idMap.get(i + 1).length; scores ++) {
-      let li = document.createElement("li");
-      li.setAttribute("id", "score");
-      li.style.color = "white";
-      let liText = document.createTextNode(idMap.get(i + 1)[scores][0] + ", Time: " + idMap.get(i + 1)[scores][1] + ", Date: " + (idMap.get(i + 1)[scores][2]).substring(0,10))
-      li.appendChild(liText);
-      ul.appendChild(li);
+    console.log(idMap.get(i + 1)[1]);
+
+    //  Sort the scores
+    nestedSort(idMap.get(i + 1));
+
+    //  Render the scores
+    for (let scores = 0; scores < 5; scores++) {
+      if (idMap.get(i + 1)[scores]) {
+        let li = document.createElement("li");
+        li.setAttribute("id", "score");
+        li.style.color = "white";
+        let liText = document.createTextNode(
+          scores +
+            1 +
+            ". " +
+            idMap.get(i + 1)[scores][0] +
+            ", Time: " +
+            idMap.get(i + 1)[scores][1] +
+            ", Date: " +
+            idMap.get(i + 1)[scores][2].substring(0, 10)
+        );
+        li.appendChild(liText);
+        ul.appendChild(li);
+      }
     }
   }
   console.log("rendering scores");
   userSpace.appendChild(userSpaceDisplay);
-
 }
 
-const renderUser = (userHash) => {
-  console.log("we are here");
-  let div = document.getElementById("userInfo");
+function renderUser() {
+  //  Remove anything from the section
+  while (userSpaceDisplay.hasChildNodes()) {
+    userSpaceDisplay.removeChild(userSpaceDisplay.firstChild);
+  }
+
+  document.getElementById("userSpace").style.display = "block";
   let p = document.createElement("p");
+  p.innerHTML = "Your scores";
+  p.style.textAlign = "center";
+  p.style.color = "white";
+  userSpaceDisplay.appendChild(p);
+  console.log(userInfo);
 
-  div.setAttribute("class", "card");
-  console.log(userHash);
+  // userInfo[2] = mazes, 3 = scores
 
-  div.appendChild(p);
-  div.appendChild(button);
-  div.appendChild(ul);
-};
+  let idMap = new Map();
+  console.log(scoresArray);
+
+  //  Make a map of the mazes
+
+  for (let i = 0; i < scoresArray.length; i++) {
+    let tempArray = scoresArray[i];
+    let score = [tempArray[1], tempArray[2], tempArray[4]];
+    if (!idMap.get(parseInt(tempArray))) {
+      idMap.set(parseInt(tempArray[0]), []);
+    }
+    idMap.get(parseInt(tempArray)).push(score);
+  }
+
+  //  Iterate over each maze
+
+  for (let i = 0; i < idMap.size; i++) {
+    let ul = document.createElement("ul");
+    ul.innerHTML = "Maze " + (i + 1);
+    userSpaceDisplay.appendChild(ul);
+    ul.setAttribute("id", "scores");
+    console.log(idMap.get(i + 1)[1]);
+
+    //  Sort the scores
+    nestedSort(idMap.get(i + 1));
+
+    //  Render the scores
+    for (let scores = 0; scores < 5; scores++) {
+      if (idMap.get(i + 1)[scores]) {
+        let li = document.createElement("li");
+        li.setAttribute("id", "score");
+        li.style.color = "white";
+        let liText = document.createTextNode(
+          scores +
+            1 +
+            ". " +
+            idMap.get(i + 1)[scores][0] +
+            ", Time: " +
+            idMap.get(i + 1)[scores][1] +
+            ", Date: " +
+            idMap.get(i + 1)[scores][2].substring(0, 10)
+        );
+        li.appendChild(liText);
+        ul.appendChild(li);
+      }
+    }
+  }
+}
 
 let MAZE_WIDTH = 800;
 let MAZE_HEIGHT = 600;
@@ -279,9 +368,9 @@ let game = null;
 
 let testPaths =
   "0 60 10 60 20 60 30 60 40 60 60 0 60 10 60 20 60 30 70 30 80 30 80 40 80 50 80 60 80 70 80 110 80 120 80 130 80 140 80 150 70 130 90 110 100 110 110 110 120 110 " +
-  "40 70 40 80 40 90 40 100 30 100 30 110 30 120 30 130 30 140 30 150 30 160 " + 
+  "40 70 40 80 40 90 40 100 30 100 30 110 30 120 30 130 30 140 30 150 30 160 " +
   "120 100 120 90 120 80 120 70 120 60 120 50 120 40 120 30 120 20 120 10 120 0";
-let testCoins = "65 5 165 45 265 5 215 25 15 85 165 265";
+let testCoins = "65 5 165 45 265 5 215 25 15 85 185 270";
 
 let testPaths2 = "";
 let testCoins2 = "50 50";
@@ -294,8 +383,8 @@ function setMazeData(json) {
       parseInt(json[i].height * PATH_SIZE),
       (CANVAS_WIDTH - json[i].width * PATH_SIZE) / 2,
       (CANVAS_HEIGHT - json[i].height * PATH_SIZE) / 2,
-      testPaths,
-      testCoins2,
+      json[i].paths,
+      testCoins,
       COIN_RADIUS,
       FINISH_AREA_SIZE,
       PATH_SIZE,
