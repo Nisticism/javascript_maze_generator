@@ -41,14 +41,12 @@ class Game {
       this.scoresJson = [];
       let sec = this.time;
       let interval = null;
-    }
 
-    gameTimer() {
-
-      setInterval(function() {document.getElementById('timer_text').innerHTML = '' + (parseInt(sec)); sec++}, 1000);
+      console.log("Constructed");
     }
   
     start() {
+      console.log(this.gamestate === GAMESTATE.MENU);
       if (this.gamestate === GAMESTATE.PAUSED || this.gamestate === GAMESTATE.RUNNING) return
       if (this.gamestate == GAMESTATE.GAMEOVER) {
         this.loadNextLevel("new");
@@ -98,6 +96,7 @@ class Game {
     }
   
     update(deltaTime) {
+      console.log(this.gamestate === GAMESTATE.MENU);
       if (this.gamestate === GAMESTATE.PAUSED || this.gamestate === GAMESTATE.MENU) {
         this.time = parseInt(document.getElementById('timer_text').innerHTML)
         console.log("Paused or Menu");
@@ -109,13 +108,19 @@ class Game {
       //  Check if all the coins are gone
       if (this.coins.length > 0) {
         this.coins.forEach((coin) => coin.update(deltaTime));
-      } else 
-      this.finish_area.update(deltaTime);
+      } else
+      if (this.coins.length <= 0 && this.finish_area.collision()) {
+        console.log("finish area");
+        //  Load next
+        this.loadNextLevel();
+        this.finish_area.update(deltaTime);
+      }
 
     }
   
     draw(ctx) {
-      
+      console.log("Drawing");
+      console.log(this.gamestate === GAMESTATE.MENU);
       document.getElementById('maze_text').innerHTML=`Maze ${this.gameId}`
       this.drawMazeBorder(ctx);
       this.drawStartingArea(ctx);
@@ -168,6 +173,7 @@ class Game {
 
 
     pause() {
+      console.log("Paused");
       if (this.gamestate == GAMESTATE.MENU) return;
       if (this.gamestate == GAMESTATE.PAUSED) {
         this.gamestate = GAMESTATE.RUNNING;
@@ -199,10 +205,29 @@ class Game {
           user_id: userId,
           maze_id: gameId
         })
-      }).catch(error => console.log('ERROR'))
+      }).then((res) => res.json())
+      .catch(error => console.log('ERROR'))
+    };
+
+    loadScores = () => {
+      fetch('http://localhost:3000/scores')
+        .then((res) => res.json())
+        .then((json) => {
+          console.log(JSON.stringify(json));
+        });
     };
 
     loadNextLevel(option) {
+
+      if (this.gamestate == GAMESTATE.GAMEOVER) return;
+
+        console.log("Load Next");
+
+        //  Making a score
+        clearInterval(this.interval);
+        this.time = document.getElementById('timer_text').innerHTML;
+        //this.makeScore(this.userId, this.gameId, this.time);
+        console.log("Score made");
 
         if (this.GAMESTATE != GAMESTATE.GAMEOVER) {
 
@@ -239,14 +264,16 @@ class Game {
       this.startAreaWidth = gameArray[this.gameIndex][10];
       this.startAreaHeight = gameArray[this.gameIndex][11];
       this.maxMazes = gameArray[this.gameIndex][12];
+      this.interval = null;
+      this.time = 0;
 
       this.gamestate = GAMESTATE.MENU;
 
     }
 
     gameEnd() {
+      console.log("Game End");
       if (this.gameIndex > this.maxMazes) {
-        //this.gameArray = [];
         this.gamestate = GAMESTATE.GAMEOVER;
         return;
       } else {
@@ -257,6 +284,9 @@ class Game {
 
     quit() {
       clearInterval(this.interval);
+      this.time = 0;
+      this.interval = null;
+
     }
   }
   

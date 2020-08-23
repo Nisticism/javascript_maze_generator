@@ -25,6 +25,7 @@ ActiveRecord::Schema.define(version: 2020_08_14_004523) do
 
   create_table "scores", force: :cascade do |t|
     t.string "time"
+    t.string "username"
     t.integer "user_id"
     t.integer "maze_id"
     t.datetime "created_at", precision: 6, null: false

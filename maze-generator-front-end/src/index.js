@@ -10,35 +10,33 @@ const ctx = canvas.getContext("2d");
 
 const main = document.querySelector("main");
 
+let CANVAS_WIDTH = 1000;
+let CANVAS_HEIGHT = 800;
+
 let username = null;
 let userId = null;
 
 let gameArray = [];
 let loggedIn = false;
-
-//document.addEventListener("DOMContentLoaded", () => setLogInButton());
+let uiSwitch = false;
+let userInfo = [];
+let userSpaceDisplay = document.createElement("section");
+let userSpace = document.getElementById("userSpace");
 
 const setLogInButton = () => {
-
   if (userId) {
+    console.log("booting up, logged in");
     setListenerForLogout();
-  }
-  else {
+  } else {
+    console.log("booting up, not logged in");
     gameArray = [];
-    document
-      .getElementById("logInButton")
-      .addEventListener("click", (event) => {
-        console.log("@@clickedWhenLoggedOut");
-        username = document.getElementById("logInField").value;
-        makeOrGetUser(username);
-      });
+    setListenerForLogin();
   }
   refreshUI();
 };
 
 function refreshUI() {
-  console.log("@@refresh", userId)
-  gameArray = [];
+  console.log("@@refresh", userId);
   if (userId) {
     setLoggedInUI();
   } else {
@@ -46,35 +44,69 @@ function refreshUI() {
   }
 }
 
+function setListenerForLogin() {
+  document.getElementById("logInButton").addEventListener("click", (event) => {
+    event.preventDefault();
+    console.log("@@clickedWhenLoggedOut");
+    username = document.getElementById("logInField").value;
+    makeOrGetUser(username);
+    refreshUI();
+    var old_element = document.getElementById("logInButton");
+    var new_element = old_element.cloneNode(true);
+    old_element.parentNode.replaceChild(new_element, old_element);
+    setListenerForLogout();
+    console.log("listenerSet");
+    refreshUI();
+  });
+}
+
 function setListenerForLogout() {
-  document
-      .getElementById("logInButton")
-      .addEventListener("click", (event) => {
-        console.log("@@clickedWhenLoggedIn");
-        userId = null;
-      });
+  document.getElementById("logInButton").addEventListener("click", (event) => {
+    event.preventDefault();
+    console.log("@@clickedWhenLoggedIn");
+    gameArray = [];
+    userId = null;
+    refreshUI();
+    var old_element = document.getElementById("logInButton");
+    var new_element = old_element.cloneNode(true);
+    old_element.parentNode.replaceChild(new_element, old_element);
+    setListenerForLogin();
+    console.log("listenerForLogOut set");
+    refreshUI();
+  });
 }
 
 function setLoggedOutUI() {
+  while (userSpaceDisplay.hasChildNodes()) {
+    userSpaceDisplay.removeChild(userSpaceDisplay.firstChild);
+  }
   console.log("Log out UI set");
   document.getElementById("timer_text").style.display = "none";
   document.getElementById("logInButton").innerHTML = "Log in";
-  document.getElementById("userInfo").innerHTML = "Please Log in to play";
+  document.getElementById("userInfo").style.display = "none";
   document.getElementById("logInField").style.display = "inline-block";
   document.getElementById("play").innerHTML = "Log in";
   document.getElementById("scores").style.display = "none";
   document.getElementById("usernameText").style.display = "inline";
+  uiSwitch = false;
 }
 
 function setLoggedInUI() {
+  while (userSpaceDisplay.hasChildNodes()) {
+    userSpaceDisplay.removeChild(userSpaceDisplay.firstChild);
+  }
+  document.getElementById("userInfo").style.display = "block";
   document.getElementById("timer_text").style.display = "block";
   document.getElementById("logInButton").innerHTML = "Log out";
+  document.getElementById("userSpace").style.display = "block";
   document.getElementById("userInfo").innerHTML = `Welcome ${username}!`;
   document.getElementById("logInField").value = "";
   document.getElementById("logInField").style.display = "none";
   document.getElementById("usernameText").style.display = "none";
   document.getElementById("play").innerHTML = "Play";
   document.getElementById("scores").style.display = "block";
+  
+  console.log("loggedin")
 }
 
 function setListeners() {
@@ -83,10 +115,23 @@ function setListeners() {
   });
   document.getElementById("play").addEventListener("click", (event) => {
     event.preventDefault();
+    if (!userId) {
+      while (userSpaceDisplay.hasChildNodes()) {
+        userSpaceDisplay.removeChild(userSpaceDisplay.firstChild);
+      }
+      let p = document.createElement('p');
+      p.innerHTML = "Please log in to play"
+      p.style.color = "white"
+      p.style.textAlign = "center"
+      userSpaceDisplay.appendChild(p);
+      userSpace = document.getElementById("userSpace");
+      userSpace.appendChild(userSpaceDisplay);
+      console.log("clicked1");
+    }
   });
   document.getElementById("leaderboard").addEventListener("click", (event) => {
     event.preventDefault();
-    var scrollingElement = (document.scrollingElement || document.body);
+    var scrollingElement = document.scrollingElement || document.body;
     scrollingElement.scrollTop = scrollingElement.scrollHeight;
     loadScores();
   });
@@ -97,7 +142,6 @@ function setListeners() {
 
 setListeners();
 setLogInButton();
-refreshUI();
 
 const makeOrGetUser = (username) => {
   fetch(`${FIND_OR_CREATE}`, {
@@ -134,21 +178,29 @@ const loadScores = () => {
     });
 };
 
-const loadUser = () => {
-  fetch(SCORES)
+const loadUser = (id) => {
+  fetch(`${PROFILE}/${id}`)
     .then((res) => res.json())
     .then((json) => {
-      setScoresData(json);
+      setUserInfo(json);
     });
 };
+
+function setUserInfo(json) {
+  userInfo[0] = json.id;
+  userInfo[1] = json.username;
+  userInfo[2] = json.mazes;
+  userInfo[3] = json.scores;
+}
 
 function setScoresData(json) {
   let scoresArray = [];
   for (let i = 0; i < json.length; i++) {
     var scores_array = [
       parseInt(json[i].maze_id),
-      parseInt(json[i].user_id),
+      json[i].username,
       json[i].time,
+      parseInt(json[i].user_id),
       json[i].created_at,
     ];
     scoresArray.push(scores_array);
@@ -158,18 +210,45 @@ function setScoresData(json) {
 }
 
 function renderScoresData(scoresArray) {
-  console.log("rendering scores");
-  let ul = document.createElement("ul");
-  let li = document.createElement("li");
-  li.innerHTML = scoresArray[0];
+
+  while (userSpaceDisplay.hasChildNodes()) {
+    userSpaceDisplay.removeChild(userSpaceDisplay.firstChild);
+  }
+
+  document.getElementById("userSpace").style.display = "block";
   let p = document.createElement("p");
-  p.innerHTML = "Leaderbord";
-  ul.innerHTML = "Leaderboard";
-  let userSpace = document.getElementById("userSpace");
-  userSpace.appendChild(p);
-  ul.appendChild(li);
-  userSpace.appendChild(ul);
-  
+  p.innerHTML = "Leaderboard";
+  p.style.textAlign = "center";
+  p.style.color = "white";
+  userSpaceDisplay.appendChild(p);
+  console.log(scoresArray[0][1]);
+  let idMap = new Map()
+  console.log(scoresArray);
+  for (let i = 0; i < scoresArray.length; i ++) {
+    let tempArray = scoresArray[i];
+    let score = [tempArray[1], tempArray[2], tempArray[4]]
+    if (!idMap.get(parseInt(tempArray))) {
+      idMap.set(parseInt(tempArray[0]), [])
+    }
+    idMap.get(parseInt(tempArray)).push(score)
+  }
+  for (let i = 0; i < idMap.size; i ++) {
+    let ul = document.createElement("ul");
+    ul.innerHTML = "Maze " + (i + 1);
+    userSpaceDisplay.appendChild(ul);
+    ul.setAttribute("id", "scores");
+    for (let scores = 0; scores < idMap.get(i + 1).length; scores ++) {
+      let li = document.createElement("li");
+      li.setAttribute("id", "score");
+      li.style.color = "white";
+      let liText = document.createTextNode(idMap.get(i + 1)[scores][0] + ", Time: " + idMap.get(i + 1)[scores][1] + ", Date: " + (idMap.get(i + 1)[scores][2]).substring(0,10))
+      li.appendChild(liText);
+      ul.appendChild(li);
+    }
+  }
+  console.log("rendering scores");
+  userSpace.appendChild(userSpaceDisplay);
+
 }
 
 const renderUser = (userHash) => {
@@ -185,8 +264,6 @@ const renderUser = (userHash) => {
   div.appendChild(ul);
 };
 
-let CANVAS_WIDTH = 1000;
-let CANVAS_HEIGHT = 800;
 let MAZE_WIDTH = 800;
 let MAZE_HEIGHT = 600;
 let PATH_SIZE = 10;
@@ -201,18 +278,9 @@ let games = [];
 let game = null;
 
 let testPaths =
-  "80 40 50 70 60 80 0 60 10 60 20 60 30 60 40 60 60 0 60 10 60 20 60 30 70 30 80 30 90 30 100 30 110 40 120 50" +
-  " 150 30 160 30 170 30 180 30 190 30 200 30 200 40 200 50 200 60 200 70 204 80 194 80 160 80" +
-  " 150 80 140 80 150 80 150 70 150 60 150 50 150 40 250 0 250 10 250 20 250 30 250 40 250 50 250 60 250 70 250 80 250 90 250 100" +
-  " 250 110 250 120 240 120 230 120 220 120 210 120 200 120 190 120 180 120 170 120 160 120 150 120 140 120" +
-  " 100 90 100 100 100 110 100 120 100 130 100 140 100 150 100 160 100 170 100 180 100 190 100 200 100 210" +
-  // mid vertical
-  " 140 130 140 170 140 180 140 190 140 200 140 210 140 220 140 230 140 240 140 250 140 260" +
-  " 100 220 90 220 80 220 70 220 60 220 50 220 40 220 30 220 30 230 30 240 30 250" +
-  " 130 260 120 260 110 260 100 260 90 260 60 290 60 280 60 270" +
-  " 140 170 150 170 160 170 170 170 180 160 180 160 190 160 200 160 210 160 220 160 230 160 240 160 250 160 260 160 270 160 280 160 290 160" +
-  " 210 290 210 280 210 270 210 260 210 250 210 240 200 240 190 240 190 230 190 220 190 210" +
-  " 230 180 230 190 230 200";
+  "0 60 10 60 20 60 30 60 40 60 60 0 60 10 60 20 60 30 70 30 80 30 80 40 80 50 80 60 80 70 80 110 80 120 80 130 80 140 80 150 70 130 90 110 100 110 110 110 120 110 " +
+  "40 70 40 80 40 90 40 100 30 100 30 110 30 120 30 130 30 140 30 150 30 160 " + 
+  "120 100 120 90 120 80 120 70 120 60 120 50 120 40 120 30 120 20 120 10 120 0";
 let testCoins = "65 5 165 45 265 5 215 25 15 85 165 265";
 
 let testPaths2 = "";
@@ -237,7 +305,9 @@ function setMazeData(json) {
       json.length,
       CURSOR_SPEED,
     ];
-    gameArray.push(new_array);
+    if (userId) {
+      gameArray.push(new_array);
+    }
   }
   console.log(gameArray);
   game = createGame(0);
@@ -269,18 +339,15 @@ function createGame(gameId) {
 
 let lastTime = 0;
 
-let uiSwitch = false;
-
 function gameLoop(timestamp) {
-  console.log(`@@@${userId}`)
+  console.log(`@@@${userId}`);
   //setLogInButton();
   if (userId) {
     console.log(`@@${uiSwitch}`);
     if (!uiSwitch) {
       console.log("uiSwitched");
-      refreshUI();
       uiSwitch = true;
-      setListenerForLogout();
+      refreshUI();
     }
     let deltaTime = timestamp - lastTime;
     lastTime = timestamp;
@@ -288,15 +355,14 @@ function gameLoop(timestamp) {
     game.update(deltaTime);
     game.draw(ctx);
     requestAnimationFrame(gameLoop);
-    console.log("looping");
     console.log(userId);
   } else {
     console.log("Quit");
     ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
     game.quit();
+    gameArray = [];
     console.log(`@@${uiSwitch} off`);
     if (uiSwitch) {
-      refreshUI();
       uiSwitch = false;
     }
   }
