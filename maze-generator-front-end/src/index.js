@@ -65,6 +65,7 @@ function setListenerForLogout() {
     event.preventDefault();
     console.log("@@clickedWhenLoggedIn");
     gameArray = [];
+    userInfo = [];
     userId = null;
     refreshUI();
     var old_element = document.getElementById("logInButton");
@@ -141,6 +142,9 @@ function setListeners() {
   });
   document.getElementById("browseMazes").addEventListener("click", (event) => {
     event.preventDefault();
+    var scrollingElement = document.scrollingElement || document.body;
+    scrollingElement.scrollTop = scrollingElement.scrollHeight;
+    loadMazesList();
   });
 }
 
@@ -173,6 +177,33 @@ const loadMazes = () => {
       setMazeData(json);
     });
 };
+
+const loadMazesList = () => {
+  fetch(MAZES)
+    .then((res) => res.json())
+    .then((json) => {
+      renderMazeList(json);
+    });
+};
+
+function renderMazeList(json) {
+  document.getElementById("userInfo").style.display = "none"
+  while (userSpaceDisplay.hasChildNodes()) {
+    userSpaceDisplay.removeChild(userSpaceDisplay.firstChild);
+  }
+  let ul = document.createElement("ul");
+  ul.setAttribute("id", "scores");
+  ul.innerHTML = "Maze Levels"
+  ul.style.margin = "10px"
+  for (let i = 0; i < json.length; i ++) {
+    let li = document.createElement("li")
+    li.setAttribute("id", "score")
+    li.innerHTML = "Maze " + json[i].id + ".... Coins: " + json[i].coins.length + ".... Width: " + json[i].width + " .... Height: " + json[i].height
+    ul.appendChild(li)
+  }
+  userSpaceDisplay.appendChild(ul);
+  userSpace.appendChild(userSpaceDisplay);
+}
 
 const loadScores = () => {
   fetch(SCORES)
@@ -343,7 +374,7 @@ function renderUser() {
         tempArray.push(score)
       }
     }
-    
+
     nestedSort(tempArray);
     console.log("@@@@@" + tempArray);
     for (let j = 0; j < tempArray.length; j ++) {
@@ -390,7 +421,7 @@ function setMazeData(json) {
       parseInt(json[i].height * PATH_SIZE),
       (CANVAS_WIDTH - json[i].width * PATH_SIZE) / 2,
       (CANVAS_HEIGHT - json[i].height * PATH_SIZE) / 2,
-      json[i].paths,
+      testPaths,
       testCoins,
       COIN_RADIUS,
       FINISH_AREA_SIZE,
