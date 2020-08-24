@@ -54,7 +54,7 @@ paths: "60 60 70 70 80 80 90 90 300 40 50 50 60 60 70 70 80 80 90 90 100 100",
 user_id: test_user.id)
 
 score_a = Score.create(time: "10.0", username: test_user.username, user_id: 1, maze_id: 1)
-score_b = Score.create(time: "9.2", username: test_user.username, user_id: 2, maze_id: 2)
+score_b = Score.create(time: "9.2", username: test_user.username, user_id: 1, maze_id: 2)
 score_c = Score.create(time: "8.5", username: "SecondUser", user_id: 2, maze_id: 1)
 score_d = Score.create(time: "7.2", username: "TestUser", user_id: 1, maze_id: 2)
 

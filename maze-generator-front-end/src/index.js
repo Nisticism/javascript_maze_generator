@@ -112,7 +112,9 @@ function setLoggedInUI() {
 function setListeners() {
   document.getElementById("scores").addEventListener("click", (event) => {
     event.preventDefault();
-    loadUserScore();
+    var scrollingElement = document.scrollingElement || document.body;
+    scrollingElement.scrollTop = scrollingElement.scrollHeight;
+    loadUserScores(userId);
   });
   document.getElementById("play").addEventListener("click", (event) => {
     event.preventDefault();
@@ -132,6 +134,7 @@ function setListeners() {
   });
   document.getElementById("leaderboard").addEventListener("click", (event) => {
     event.preventDefault();
+    //  scroll down
     var scrollingElement = document.scrollingElement || document.body;
     scrollingElement.scrollTop = scrollingElement.scrollHeight;
     loadScores();
@@ -179,7 +182,8 @@ const loadScores = () => {
     });
 };
 
-const loadUser = (id) => {
+const loadUserScores = (id) => {
+  console.log("@@@@@ userscores")
   fetch(`${PROFILE}/${id}`)
     .then((res) => res.json())
     .then((json) => {
@@ -188,10 +192,13 @@ const loadUser = (id) => {
 };
 
 function setUserInfo(json) {
+  console.log("@@@@@ settingUserInfo")
   userInfo[0] = json.id;
   userInfo[1] = json.username;
   userInfo[2] = json.mazes;
   userInfo[3] = json.scores;
+  console.log("@@@@@" + userInfo);
+  console.log("@@@@@ about to render the user...");
   renderUser();
 }
 
@@ -272,11 +279,11 @@ function renderScoresData(scoresArray) {
         let liText = document.createTextNode(
           scores +
             1 +
-            ". " +
+            ".... " +
             idMap.get(i + 1)[scores][0] +
-            ", Time: " +
+            ".... Time: " +
             idMap.get(i + 1)[scores][1] +
-            ", Date: " +
+            ".... Date: " +
             idMap.get(i + 1)[scores][2].substring(0, 10)
         );
         li.appendChild(liText);
@@ -288,8 +295,13 @@ function renderScoresData(scoresArray) {
   userSpace.appendChild(userSpaceDisplay);
 }
 
+const distinct = (value, index, self) => {
+  return self.indexOf(value) === index;
+}
+
 function renderUser() {
   //  Remove anything from the section
+  document.getElementById("userInfo").style.display = "none";
   while (userSpaceDisplay.hasChildNodes()) {
     userSpaceDisplay.removeChild(userSpaceDisplay.firstChild);
   }
@@ -300,57 +312,52 @@ function renderUser() {
   p.style.textAlign = "center";
   p.style.color = "white";
   userSpaceDisplay.appendChild(p);
-  console.log(userInfo);
+  console.log("@@@@@" + userInfo[2]);
 
   // userInfo[2] = mazes, 3 = scores
-
-  let idMap = new Map();
-  console.log(scoresArray);
-
-  //  Make a map of the mazes
-
-  for (let i = 0; i < scoresArray.length; i++) {
-    let tempArray = scoresArray[i];
-    let score = [tempArray[1], tempArray[2], tempArray[4]];
-    if (!idMap.get(parseInt(tempArray))) {
-      idMap.set(parseInt(tempArray[0]), []);
-    }
-    idMap.get(parseInt(tempArray)).push(score);
+  console.log("@@@@@" + " maze arrays" + userInfo[2][0].id)
+  console.log("@@@@@" + " maze arrays" + userInfo[2][1].id)
+  console.log("@@@@@" + " maze arrays" + userInfo[2][2].id)
+  let maze_ids = []
+  for (let i = 0; i < userInfo[2].length; i ++) {
+    maze_ids.push(userInfo[2][i].id)
   }
-
-  //  Iterate over each maze
-
-  for (let i = 0; i < idMap.size; i++) {
+  maze_ids = maze_ids.filter(distinct)
+  for (let i = 0; i < maze_ids.length; i++) {
     let ul = document.createElement("ul");
-    ul.innerHTML = "Maze " + (i + 1);
-    userSpaceDisplay.appendChild(ul);
-    ul.setAttribute("id", "scores");
-    console.log(idMap.get(i + 1)[1]);
-
-    //  Sort the scores
-    nestedSort(idMap.get(i + 1));
-
-    //  Render the scores
-    for (let scores = 0; scores < 5; scores++) {
-      if (idMap.get(i + 1)[scores]) {
-        let li = document.createElement("li");
-        li.setAttribute("id", "score");
-        li.style.color = "white";
-        let liText = document.createTextNode(
-          scores +
-            1 +
-            ". " +
-            idMap.get(i + 1)[scores][0] +
-            ", Time: " +
-            idMap.get(i + 1)[scores][1] +
-            ", Date: " +
-            idMap.get(i + 1)[scores][2].substring(0, 10)
-        );
-        li.appendChild(liText);
-        ul.appendChild(li);
+    let score_subtitle = "Maze " + userInfo[2][i].id
+    ul.innerHTML = score_subtitle
+    ul.setAttribute("id", "scores")
+    userSpaceDisplay.appendChild(ul)
+    console.log("@@@@@" + userInfo[3].length);
+    let tempArray = []
+    for (let j = 0; j < userInfo[3].length; j++) {
+      console.log("@@@@@ temparray" + tempArray)
+      console.log("@@@@@ each score" + userInfo[3][j].time + " " + userInfo[3][j].created_at);
+      if (userInfo[3][j].maze_id == userInfo[2][i].id) {
+        let score = []
+        score.push(userInfo[3][j].created_at)
+        score.push(parseFloat(userInfo[3][j].time))
+        console.log("@@@@@" + userInfo[3][j].time);
+        console.log("@@@@@" + userInfo[3][j].created_at);
+        tempArray.push(score)
       }
     }
+    
+    nestedSort(tempArray);
+    console.log("@@@@@" + tempArray);
+    for (let j = 0; j < tempArray.length; j ++) {
+      let li = document.createElement("li")
+      li.setAttribute("id", "score")
+      li.innerHTML = (j + 1) + "....  " + tempArray[j][1] + " seconds......Date: " + tempArray[j][0].substring(0, 10)
+      ul.appendChild(li) 
+    }
+    
   }
+
+  console.log("@@@@@ rendering user scores");
+  userSpaceDisplay.style.display = "block"
+  userSpace.appendChild(userSpaceDisplay);
 }
 
 let MAZE_WIDTH = 800;
