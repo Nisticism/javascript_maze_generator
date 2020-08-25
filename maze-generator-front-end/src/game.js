@@ -48,9 +48,6 @@ class Game {
     start() {
       console.log(this.gamestate === GAMESTATE.MENU);
       if (this.gamestate === GAMESTATE.PAUSED || this.gamestate === GAMESTATE.RUNNING) return
-      if (this.gamestate == GAMESTATE.GAMEOVER) {
-        this.loadNextLevel("new");
-      }
       //  Start the timer
       var sec = 0;
       document.getElementById('timer_text').innerHTML = sec.toFixed(1);
@@ -155,6 +152,7 @@ class Game {
         ctx.font = "40px Arial";
         ctx.fillStyle = "white";
         ctx.textAlign = "center";
+        document.getElementById('maze_text').innerHTML=`The End`
         ctx.fillText("Congrats, you beat the game!", (this.mazeWidth + this.xOffset * 2)/2, this.mazeHeight/2);
         ctx.fillText("Press SPACEBAR to Play Again", (this.mazeWidth + this.xOffset * 2)/2, (this.mazeHeight + this.yOffset * 2)/2);
       }
@@ -238,14 +236,12 @@ class Game {
 
         console.log(this.gameIndex, this.maxMazes);
 
-        if (option == "new") {
-          this.gameIndex = 0;
-        }
       }
 
       if (this.gameIndex >= this.maxMazes) {
-        this.gameEnd();
-        return;
+        this.gamestate = GAMESTATE.GAMEOVER;
+        console.log("ending");
+        this.gameIndex = 0;
       }
 
       let gameArray = this.gameArray;
@@ -266,19 +262,9 @@ class Game {
       this.maxMazes = gameArray[this.gameIndex][12];
       this.interval = null;
       this.time = 0;
-
-      this.gamestate = GAMESTATE.MENU;
-
-    }
-
-    gameEnd() {
-      console.log("Game End");
-      if (this.gameIndex > this.maxMazes) {
-        this.gamestate = GAMESTATE.GAMEOVER;
-        return;
-      } else {
-        return false;
-      }
+        if (this.gamestate != GAMESTATE.GAMEOVER) {
+          this.gamestate = GAMESTATE.MENU;
+        }
 
     }
 
