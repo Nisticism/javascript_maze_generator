@@ -46,6 +46,7 @@ function refreshUI() {
 
 function setListenerForLogin() {
   document.getElementById("logInButton").addEventListener("click", (event) => {
+    gameArray = []
     event.preventDefault();
     console.log("@@clickedWhenLoggedOut");
     username = document.getElementById("logInField").value;
@@ -66,6 +67,9 @@ function setListenerForLogout() {
     console.log("@@clickedWhenLoggedIn");
     gameArray = [];
     userInfo = [];
+    if (game) {
+      game.quit()
+    }
     userId = null;
     refreshUI();
     var old_element = document.getElementById("logInButton");
@@ -104,7 +108,7 @@ function setLoggedInUI() {
   document.getElementById("logInField").value = "";
   document.getElementById("logInField").style.display = "none";
   document.getElementById("usernameText").style.display = "none";
-  document.getElementById("play").innerHTML = "Play";
+  document.getElementById("play").innerHTML = "Log out";
   document.getElementById("scores").style.display = "block";
 
   console.log("loggedin");
@@ -119,18 +123,20 @@ function setListeners() {
   });
   document.getElementById("play").addEventListener("click", (event) => {
     event.preventDefault();
+    var scrollingElement = document.scrollingElement || document.body;
+    scrollingElement.scrollTop = scrollingElement.scrollHeight;
     if (!userId) {
       while (userSpaceDisplay.hasChildNodes()) {
         userSpaceDisplay.removeChild(userSpaceDisplay.firstChild);
       }
-      let p = document.createElement("p");
-      p.innerHTML = "Please log in to play";
-      p.style.color = "white";
-      p.style.textAlign = "center";
-      userSpaceDisplay.appendChild(p);
-      userSpace = document.getElementById("userSpace");
-      userSpace.appendChild(userSpaceDisplay);
-      console.log("clicked1");
+    let p = document.createElement("p");
+    p.innerHTML = "Please log in to play";
+    p.style.color = "white";
+    p.style.textAlign = "center";
+    userSpaceDisplay.appendChild(p);
+    userSpace = document.getElementById("userSpace");
+    userSpace.appendChild(userSpaceDisplay);
+    console.log("clicked1");
     }
   });
   document.getElementById("leaderboard").addEventListener("click", (event) => {
@@ -338,6 +344,7 @@ function renderUser() {
   }
 
   document.getElementById("userSpace").style.display = "block";
+  console.log("scores " + userInfo[3])
   let p = document.createElement("p");
   p.innerHTML = "Your scores";
   p.style.textAlign = "center";
@@ -346,9 +353,6 @@ function renderUser() {
   console.log("@@@@@" + userInfo[2]);
 
   // userInfo[2] = mazes, 3 = scores
-  console.log("@@@@@" + " maze arrays" + userInfo[2][0].id)
-  console.log("@@@@@" + " maze arrays" + userInfo[2][1].id)
-  console.log("@@@@@" + " maze arrays" + userInfo[2][2].id)
   let maze_ids = []
   for (let i = 0; i < userInfo[2].length; i ++) {
     maze_ids.push(userInfo[2][i].id)
@@ -411,18 +415,19 @@ let testPaths =
 let testCoins = "65 5 165 45 265 5 215 25 15 85 185 270";
 
 let testPaths2 = "";
-let testCoins2 = "50 50";
+let testCoins2 = "50 50 100 100";
 
 function setMazeData(json) {
   games = [];
   for (let i = 0; i < json.length; i++) {
+    console.log("maze paths " + json[i].paths)
     var new_array = [
       parseInt(json[i].width * PATH_SIZE),
       parseInt(json[i].height * PATH_SIZE),
       (CANVAS_WIDTH - json[i].width * PATH_SIZE) / 2,
       (CANVAS_HEIGHT - json[i].height * PATH_SIZE) / 2,
-      testPaths2,
-      testCoins2,
+      json[i].paths,
+      testCoins,
       COIN_RADIUS,
       FINISH_AREA_SIZE,
       PATH_SIZE,
@@ -468,7 +473,6 @@ let lastTime = 0;
 
 function gameLoop(timestamp) {
   console.log(`@@@${userId}`);
-  //setLogInButton();
   if (userId) {
     console.log(`@@${uiSwitch}`);
     if (!uiSwitch) {

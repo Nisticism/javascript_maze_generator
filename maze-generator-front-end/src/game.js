@@ -65,6 +65,7 @@ class Game {
       this.gameObjects.push(this.cursor);
 
       this.gamestate = GAMESTATE.RUNNING;
+      console.log("path string game objects" + this.gameObjects)
 
     }
 
@@ -98,6 +99,9 @@ class Game {
         this.time = parseInt(document.getElementById('timer_text').innerHTML)
         console.log("Paused or Menu");
         console.log(this.gameId);
+        if (this.gamestate === GAMESTATE.MENU) {
+          document.getElementById('timer_text').innerHTML = "Time"
+        }
         return;
       }
       this.cursor.update(deltaTime);
@@ -142,7 +146,7 @@ class Game {
         ctx.textAlign = "center";
         ctx.fillText(`LEVEL ${this.gameId }`, (this.mazeWidth + this.xOffset * 2)/2, this.mazeHeight/2);
         ctx.fillText("Press SPACEBAR to Start", (this.mazeWidth + this.xOffset * 2)/2, (this.mazeHeight + this.yOffset * 2)/2);
-
+        document.getElementById("timer_text").innerHTML =  "Time"
       }
 
       if (this.gamestate === GAMESTATE.GAMEOVER) {
@@ -224,7 +228,7 @@ class Game {
         //  Making a score
         clearInterval(this.interval);
         this.time = document.getElementById('timer_text').innerHTML;
-        //this.makeScore(this.userId, this.gameId, this.time);
+        this.makeScore(this.userId, this.gameId, this.time);
         console.log("Score made");
 
         if (this.GAMESTATE != GAMESTATE.GAMEOVER) {
@@ -233,8 +237,10 @@ class Game {
         document.getElementById('timer_text').innerHTML = "Time"
         this.gameObjects = []
         this.gameIndex += 1;
+        this.paths = [];
+        this.coins = [];
 
-        console.log(this.gameIndex, this.maxMazes);
+        console.log("testing");
 
       }
 
@@ -243,7 +249,6 @@ class Game {
         console.log("ending");
         this.gameIndex = 0;
       }
-
       let gameArray = this.gameArray;
 
       //  Set all the new properties
@@ -262,9 +267,12 @@ class Game {
       this.maxMazes = gameArray[this.gameIndex][12];
       this.interval = null;
       this.time = 0;
+
+      console.log("path string" + this.pathString)
         if (this.gamestate != GAMESTATE.GAMEOVER) {
           this.gamestate = GAMESTATE.MENU;
         }
+
 
     }
 
