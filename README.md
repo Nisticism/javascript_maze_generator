@@ -1,4 +1,4 @@
-Welcome to the javascript project!
+Welcome to the javascript maze race project!
 
 This project should be started by the following:
 

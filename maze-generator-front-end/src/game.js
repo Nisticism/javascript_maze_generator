@@ -41,12 +41,10 @@ class Game {
       this.scoresJson = [];
       let sec = this.time;
       let interval = null;
-
-      console.log("Constructed");
+      
     }
   
     start() {
-      console.log(this.gamestate === GAMESTATE.MENU);
       if (this.gamestate === GAMESTATE.PAUSED || this.gamestate === GAMESTATE.RUNNING) return
       //  Start the timer
       var sec = 0;
@@ -65,7 +63,6 @@ class Game {
       this.gameObjects.push(this.cursor);
 
       this.gamestate = GAMESTATE.RUNNING;
-      console.log("path string game objects" + this.gameObjects)
 
     }
 
@@ -94,11 +91,8 @@ class Game {
     }
   
     update(deltaTime) {
-      console.log(this.gamestate === GAMESTATE.MENU);
       if (this.gamestate === GAMESTATE.PAUSED || this.gamestate === GAMESTATE.MENU) {
         this.time = parseInt(document.getElementById('timer_text').innerHTML)
-        console.log("Paused or Menu");
-        console.log(this.gameId);
         if (this.gamestate === GAMESTATE.MENU) {
           document.getElementById('timer_text').innerHTML = "Time"
         }
@@ -111,7 +105,6 @@ class Game {
         this.coins.forEach((coin) => coin.update(deltaTime));
       } else
       if (this.coins.length <= 0 && this.finish_area.collision()) {
-        console.log("finish area");
         //  Load next
         this.loadNextLevel();
         this.finish_area.update(deltaTime);
@@ -120,8 +113,6 @@ class Game {
     }
   
     draw(ctx) {
-      console.log("Drawing");
-      console.log(this.gamestate === GAMESTATE.MENU);
       document.getElementById('maze_text').innerHTML=`Maze ${this.gameId}`
       this.drawMazeBorder(ctx);
       this.drawStartingArea(ctx);
@@ -175,12 +166,10 @@ class Game {
 
 
     pause() {
-      console.log("Paused");
       if (this.gamestate == GAMESTATE.MENU) return;
       if (this.gamestate == GAMESTATE.PAUSED) {
         this.gamestate = GAMESTATE.RUNNING;
         var text = document.getElementById('timer_text').innerHTML
-        console.log(text);
         if (text == "Text") {
           var sec = 0;
         } 
@@ -222,31 +211,22 @@ class Game {
     loadNextLevel(option) {
 
       if (this.gamestate == GAMESTATE.GAMEOVER) return;
-
-        console.log("Load Next");
-
         //  Making a score
         clearInterval(this.interval);
         this.time = document.getElementById('timer_text').innerHTML;
         this.makeScore(this.userId, this.gameId, this.time);
-        console.log("Score made");
-
         if (this.GAMESTATE != GAMESTATE.GAMEOVER) {
 
-        console.log(this.gameObjects);
         document.getElementById('timer_text').innerHTML = "Time"
         this.gameObjects = []
         this.gameIndex += 1;
         this.paths = [];
         this.coins = [];
 
-        console.log("testing");
-
       }
 
       if (this.gameIndex >= this.maxMazes) {
         this.gamestate = GAMESTATE.GAMEOVER;
-        console.log("ending");
         this.gameIndex = 0;
       }
       let gameArray = this.gameArray;
@@ -268,7 +248,6 @@ class Game {
       this.interval = null;
       this.time = 0;
 
-      console.log("path string" + this.pathString)
         if (this.gamestate != GAMESTATE.GAMEOVER) {
           this.gamestate = GAMESTATE.MENU;
         }

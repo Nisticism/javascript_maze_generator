@@ -9,7 +9,7 @@ class Finish {
     draw(ctx) {
         ctx.fillStyle = 'green'
         ctx.fillRect(this.game.xOffset + this.game.mazeWidth - this.game.finishAreaSize, 
-            this.game.yOffset + this.game.mazeHeight - this.game.finishAreaSize, this.width, this.height);
+            1 + this.game.yOffset + this.game.mazeHeight - this.game.finishAreaSize, this.width, this.height);
     }
 
     collision() {

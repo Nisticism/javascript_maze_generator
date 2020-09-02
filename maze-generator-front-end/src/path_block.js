@@ -2,7 +2,7 @@ class Path {
 
     constructor(x, y, game) {
         this.x = x;
-        this.y = y - 1;
+        this.y = y;
         this.game = game;
         this.width = game.pathSize;
         this.height = game.pathSize;

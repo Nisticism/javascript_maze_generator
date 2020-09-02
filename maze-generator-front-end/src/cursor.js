@@ -66,9 +66,7 @@ class Cursor {
       this.position.y = this.mazeHeight - this.height + this.yOffset;
 
     //  Path and Coins
-
     this.game.paths.forEach((path) => this.collidePath(path))
-    this.game.coins.forEach((coin) => this.collectCoins(coin))
   }
 
   isAboveAndBordering(path) {
@@ -88,7 +86,7 @@ class Cursor {
 
   isBelowAndBordering(path) {
     //  The top of the cursor is less than or equal to the bottom of the path block, and the bottom of the cursor is greater than the bottom of the path block
-    if (this.position.y <= path.y + this.yOffset + path.height && this.position.y >= path.y + this.yOffset - this.ySpeed && this.position.y + this.height > path.y + path.height + this.yOffset && 
+    if (this.position.y < path.y + this.yOffset + path.height && this.position.y > path.y + this.yOffset - this.ySpeed && this.position.y + this.height > path.y + path.height + this.yOffset && 
       ((this.position.x < (path.x + path.width + this.xOffset) && this.position.x > path.x + this.xOffset) || 
       (this.position.x + this.width < (path.x + path.width + this.xOffset) && this.position.x + this.width > path.x + this.xOffset) ||
       (this.position.x <= (path.x + this.xOffset) && this.position.x + this.width >= (path.x + path.width + this.xOffset))
@@ -142,12 +140,6 @@ class Cursor {
       this.position.x = path.x + this.xOffset + path.width;
     }
     
-  }
-
-  collectCoins(coin) {
-    if (coin.x) {
-
-    }
   }
 
 }
