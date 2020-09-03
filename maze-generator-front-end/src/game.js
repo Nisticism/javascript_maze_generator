@@ -69,9 +69,8 @@ class Game {
     addPaths(pathString) {
       let paths = pathString.split(" ");
       
-      var i;
       if (pathString != "") {
-        for (i = 0; i < paths.length; i ++) {
+        for (let i = 0; i < paths.length; i ++) {
           this.paths.push(new Path(parseInt(paths[i]), (parseInt(paths[i + 1]) + 1), this))
           i += 1;
         }
@@ -81,9 +80,8 @@ class Game {
     addCoins(coinString) {
       let coins = coinString.split(" ");
       
-      var i;
       if (coinString != "") {
-        for (i = 0; i < coins.length; i ++) {
+        for (let i = 0; i < coins.length; i ++) {
           this.coins.push(new Coin((parseInt(coins[i]) + this.coinRadius), (parseInt(coins[i + 1]) + this.coinRadius), this))
           i += 1;
         }

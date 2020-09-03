@@ -106,14 +106,16 @@ function setLoggedInUI() {
 }
 
 function setListeners() {
+  // document.getElementById("sortScores").addEventListener("click", (event) => {
+  //   console.log("Sort Scores")
+  //   sortScores();
+  // });
   document.getElementById("scores").addEventListener("click", (event) => {
-    event.preventDefault();
     var scrollingElement = document.scrollingElement || document.body;
     scrollingElement.scrollTop = scrollingElement.scrollHeight;
     loadUserScores(userId);
   });
   document.getElementById("play").addEventListener("click", (event) => {
-    event.preventDefault();
     var scrollingElement = document.scrollingElement || document.body;
     scrollingElement.scrollTop = scrollingElement.scrollHeight;
     if (!userId) {
@@ -146,6 +148,38 @@ function setListeners() {
 
 setListeners();
 setLogInButton();
+
+// const sortScores = () => {
+//   fetch(`${SCORES}`)
+//   .then((res) => res.json())
+//   .then((json) => {
+//     json.sort(function(a, b) {
+//       var nameA = a.username.toUpperCase(); // ignore upper and lowercase
+//       var nameB = b.username.toUpperCase(); // ignore upper and lowercase
+//       if (nameA < nameB) {
+//         return -1;
+//       }
+//       if (nameA > nameB) {
+//         return 1;
+//       }
+    
+//       // names must be equal
+//       return 0;
+//     });
+//     console.log(json)
+//     let display = document.getElementById("userSpace")
+//     let scores = ""
+//     let ul = document.createElement("ul")
+//     json.forEach(score => {
+//       let li = document.createElement("li")
+//       li.innerHTML = score.username
+//       ul.appendChild(li)
+//     })
+//     display.appendChild(ul)
+    
+//   })
+
+// }
 
 const makeOrGetUser = (username) => {
   fetch(`${FIND_OR_CREATE}`, {
@@ -191,9 +225,11 @@ function renderMazeList(json) {
   ul.innerHTML = "Maze Levels"
   ul.style.margin = "10px"
   for (let i = 0; i < json.length; i ++) {
+    let coinsArray = json[i].coins.split(" ");
+    let coinsCount = (coinsArray.length) / 2
     let li = document.createElement("li")
     li.setAttribute("id", "score")
-    li.innerHTML = "Maze " + json[i].id + ".... Coins: " + json[i].coins.length + ".... Width: " + json[i].width + " .... Height: " + json[i].height
+    li.innerHTML = "Maze " + json[i].id + ".... Coins: " + coinsCount + ".... Width: " + json[i].width + " .... Height: " + json[i].height
     ul.appendChild(li)
   }
   userSpaceDisplay.appendChild(ul);
